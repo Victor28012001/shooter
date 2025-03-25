@@ -1,0 +1,280 @@
+@font-face {
+    font-family: "Robus-BWqOd";
+    src: url("./fonts/Robus-BWqOd.otf") format("opentype");
+  }
+
+  body {
+    margin: 0;
+  }
+
+  canvas {
+    display: block;
+  }
+
+  #blocker {
+    position: fixed;
+    width: 70%;
+    height: 70%;
+    background: url(./images/hud3.png) no-repeat center center;
+    background-size: cover;
+    z-index: 9999;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  #instructions {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+  }
+
+  #crosshair {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100px;
+    height: 100px;
+    display: none; /* Hide the crosshair by default */
+  }
+
+  #playButton {
+    font-family: "Robus-BWqOd";
+    font-size: 5vw;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.75);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+    padding: 14px 48px;
+    border-radius: 12px;
+  }
+
+  #playButton > h1 {
+    font-family: "Robus-BWqOd";
+    font-size: 95%;
+    color: rgb(0, 38, 253);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.75);
+    white-space: nowrap;
+    text-align: center;
+    /* background: url(./images/hud3.png) no-repeat center center;
+    background-size: cover; */
+    padding: 18px 12px;
+  }
+
+
+  #blood-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url("./images/blood_splash.png") center/cover;
+    opacity: 0; /* Hidden by default */
+    pointer-events: none; /* Ensures it doesn't block player interactions */
+    transition: opacity 0.3s ease-out;
+    z-index: 9999; /* Ensures it's on top of everything */
+  }
+
+  p {
+    font-family: Arial;
+    font-size: medium;
+    text-align: center;
+  }
+
+  @media (max-width: 900px) {
+    /* Styles for mobile devices with a maximum width of 767px */
+    #playButton {
+      font-family: "Robus-BWqOd";
+      font-size: 15vw; /* Adjust the font size as per your preference */
+    }
+
+    p {
+      font-size: 4vw;
+    }
+  }
+
+  /* 🌟 Fullscreen Splash Screen */
+  #splashScreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url("./images/splash_screen.png");
+    background-size: cover; /* Ensures the image covers the entire screen */
+    background-position: center; /* Centers the image */
+    background-repeat: no-repeat; /* Prevents repeating */
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    opacity: 1;
+    transition: opacity 1s ease-out;
+    font-family: "Robus-BWqOd";
+    font-size: 45px;
+  }
+
+  #splashScreen h1 {
+    font-size: 3em;
+    margin-bottom: 0;
+    color: rgb(253, 0, 0);
+  }
+  /* 📊 Loading Bar */
+  #loadingBarContainer {
+    width: 300px;
+    height: 10px;
+    background: gray;
+    margin-top: 10px;
+    overflow: hidden;
+    border-radius: 12px;
+    border: 4px solid white;
+  }
+  #loadingProgress {
+    width: 0%;
+    height: 100%;
+    background: lime;
+  }
+  #player-hud {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    width: 380px;
+    padding: 35px 35px;
+    background: url(./images/hud2.png) no-repeat center center;
+    background-size: cover;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: "Arial", sans-serif;
+    color: white;
+    font-size: 14px;
+}
+
+  #player-health-bar {
+    width: 60%;
+  }
+
+  #player-health-bar p {
+    margin: 0;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: azure;
+    margin-bottom: 4px;
+  }
+
+  #player-health {
+    width: 100%;
+    height: 12px;
+    background: linear-gradient(
+      90deg,
+      #ff0000,
+      #ff6600
+    ); /* Red to orange gradient */
+    border-radius: 6px;
+    transition: width 0.3s ease-in-out; /* Smooth width change */
+  }
+
+  #player-health > img{
+    height: auto;
+    width: 25px;
+    margin-bottom: 4px;
+  }
+
+  #ammoHUD > p{
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+  }
+
+  #ammoHUD > p > img{
+    height: auto;
+    width: 25px;
+    /* margin-bottom: 4px; */
+  }
+
+  #ammoHUD {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    font-size: 24px;
+    color: white;
+    font-family: Arial, sans-serif;
+    background: url(./images/hud2.png) no-repeat center center;
+    background-size: cover;
+    padding: 10px;
+    border-radius: 5px;
+  }
+
+
+  /* Spider HUD */
+#spider-hud {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 15px;
+    background: url(./images/hud2.png) no-repeat center center;
+    background-size: cover;
+    color: white;
+    font-size: 12px;
+    font-family: "Arial", sans-serif;
+    text-align: center;
+    height: 44px;
+}
+
+#spider-hud p{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2px;
+    margin: 0;
+    margin-top: 6px;
+}
+
+/* Game Over Popup */
+#game-over-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px;
+    padding: 60px;
+    background: url(./images/hud3.png) no-repeat center center;
+    background-size: cover;
+    color: white;
+    text-align: center;
+    height: 240px;
+    display: none;
+}
+
+#game-over-popup h2 {
+    margin-top: 6%;
+    margin-top: 10%;
+    color: #631c80;
+}
+
+#game-over-popup button {
+    padding: 10px 15px;
+    border: none;
+    background: #0382a1;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background 0.3s;
+    margin-top: 6%;
+}
+
+#game-over-popup button:hover {
+    background: #cc0000;
+}
