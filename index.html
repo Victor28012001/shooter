@@ -4,7 +4,13 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Portfolio Game</title>
-    <link rel="shortcut icon" href="./images/logo.png" type="image/x-icon" />
+    <!-- <link rel="shortcut icon" href="./assets/images/logo.png" type="image/x-icon" /> -->
+    <link
+      rel="shortcut icon"
+      href="./assets/images/splash_screen.png"
+      type="image/x-icon"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
@@ -35,19 +41,25 @@
       <div id="instructions">
         <div id="playButton">
           <h1>Play Now</h1>
-          <p>
+          <p style="color: tomato; font-size: large; font-weight: 500">
             ESC - Menu
             <br />
-            WASF ARROWS - Move
             <br />
-            LEFT MOUSE - Fire
+            WASD ARROWS - Move
+            <br />
+            <br />
+            LEFT MOUSE / Spacebar - Fire
+            <br />
+            <br />
+            R Key - Reload
+            <br />
           </p>
         </div>
       </div>
     </div>
     <div id="ammoHUD">
       <p>
-        <img src="./images/bullet.png" alt="" />Bullets:
+        <img src="./assets/images/bullet.png" alt="" />Bullets:
         <span id="currentBullets">30</span> /
         <span id="totalBullets">90</span>
       </p>
@@ -58,7 +70,7 @@
     <div id="player-hud">
       <div id="player-health-bar">
         <p>health:</p>
-        <div id="player-health"><img src="./images/heart.png" alt="" /></div>
+        <div id="player-health"><img src="./assets/images/heart.png" alt="" /></div>
       </div>
       <a
         href="https://www.vecteezy.com/free-png/game-hud"
@@ -68,11 +80,16 @@
     </div>
     <div id="blood-overlay"></div>
 
-
     <!-- Spider HUD -->
     <div id="spider-hud">
-      <p><img src="./images/spider.png" alt="" width="24" />Spiders: <span id="total-spiders">0</span></p>
-      <p><img src="./images/skull.png" alt="" width="16" />Kills: <span id="spiders-killed">0</span></p>
+      <p>
+        <img src="./assets/images/spider.png" alt="" width="24" />Spiders:
+        <span id="total-spiders">0</span>
+      </p>
+      <p>
+        <img src="./assets/images/skull.png" alt="" width="16" />Kills:
+        <span id="spiders-killed">0</span>
+      </p>
     </div>
 
     <!-- Game Over Popup -->
@@ -81,14 +98,37 @@
       <p>You were killed by the spiders!</p>
       <button id="restart-game">Restart</button>
     </div>
+    
+    <div id="game-won-popup">
+      <h2>Game Won</h2>
+      <p>You were killed by the spiders!</p>
+      <button id="next-game">Next</button>
+    </div>
+    
+    <div class="splash" id="splash">
+      <h1>FPS Journey</h1>
+      <button id="startButton">Start</button>
+    </div>
 
-    <img id="crosshair" src="./images/reticle.png" alt="Crosshair" />
+    <div class="menu hidden" id="menu">
+      <h2>Select Level</h2>
+      <div class="body">
+        <div id="levelButtons"></div>
+      </div>
+      <button id="resetProgress">Reset Progress</button>
+    </div>
+
+    <!-- <canvas id="root"></canvas> -->
+
+    <img id="crosshair" src="./assets/images/reticle.png" alt="Crosshair" />
 
     <script src="https://cdn.jsdelivr.net/npm/three@latest/build/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@latest/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@latest/examples/js/controls/PointerLockControls.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@latest/examples/js/loaders/GLTFLoader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@latest/examples/js/utils/SkeletonUtils.js"></script>
+    <script src=" https://cdn.jsdelivr.net/npm/cannon@0.6.2/build/cannon.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/cannon-es-debugger@1.0.0/dist/cannon-es-debugger.min.js"></script> -->
 
     <script type="module" src="script.js"></script>
   </body>

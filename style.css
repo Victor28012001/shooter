@@ -1,21 +1,29 @@
 @font-face {
     font-family: "Robus-BWqOd";
-    src: url("./fonts/Robus-BWqOd.otf") format("opentype");
+    src: url("./assets/fonts/Robus-BWqOd.otf") format("opentype");
+  }
+@font-face {
+    font-family: "Audiowide-Regular";
+    src: url("./assets/fonts/Audiowide-Regular.ttf") format("opentype");
+  }
+@font-face {
+    font-family: "BungeeTint-Regular";
+    src: url("./assets/fonts/BungeeTint-Regular.ttf") format("opentype");
   }
 
   body {
     margin: 0;
   }
 
-  canvas {
+  /* canvas {
     display: block;
-  }
+  } */
 
   #blocker {
     position: fixed;
-    width: 70%;
-    height: 70%;
-    background: url(./images/hud3.png) no-repeat center center;
+    width: 65%;
+    height: 65%;
+    background: url(./assets/images/hud3.png) no-repeat center center;
     background-size: cover;
     z-index: 9999;
     top: 50%;
@@ -42,7 +50,7 @@
   }
 
   #playButton {
-    font-family: "Robus-BWqOd";
+    font-family: "BungeeTint-Regular";
     font-size: 5vw;
     color: white;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.75);
@@ -56,15 +64,14 @@
   }
 
   #playButton > h1 {
-    font-family: "Robus-BWqOd";
+    font-family: "BungeeTint-Regular";
     font-size: 95%;
-    color: rgb(0, 38, 253);
+    color: rgb(255, 255, 255);
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.75);
     white-space: nowrap;
     text-align: center;
-    /* background: url(./images/hud3.png) no-repeat center center;
-    background-size: cover; */
     padding: 18px 12px;
+    cursor: pointer;
   }
 
 
@@ -74,7 +81,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: url("./images/blood_splash.png") center/cover;
+    background: url("./assets/images/blood_splash.png") center/cover;
     opacity: 0; /* Hidden by default */
     pointer-events: none; /* Ensures it doesn't block player interactions */
     transition: opacity 0.3s ease-out;
@@ -90,7 +97,7 @@
   @media (max-width: 900px) {
     /* Styles for mobile devices with a maximum width of 767px */
     #playButton {
-      font-family: "Robus-BWqOd";
+      font-family: "BungeeTint-Regular";
       font-size: 15vw; /* Adjust the font size as per your preference */
     }
 
@@ -106,7 +113,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: url("./images/splash_screen.png");
+    background: url("./assets/images/splash_screen.png");
     background-size: cover; /* Ensures the image covers the entire screen */
     background-position: center; /* Centers the image */
     background-repeat: no-repeat; /* Prevents repeating */
@@ -118,7 +125,7 @@
     z-index: 999;
     opacity: 1;
     transition: opacity 1s ease-out;
-    font-family: "Robus-BWqOd";
+    font-family: "Audiowide-Regular";
     font-size: 45px;
   }
 
@@ -148,13 +155,13 @@
     left: 20px;
     width: 380px;
     padding: 35px 35px;
-    background: url(./images/hud2.png) no-repeat center center;
+    background: url(./assets/images/hud2.png) no-repeat center center;
     background-size: cover;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-family: "Arial", sans-serif;
+    font-family: "Audiowide-Regular", sans-serif;
     color: white;
     font-size: 14px;
 }
@@ -171,6 +178,7 @@
     letter-spacing: 1px;
     color: azure;
     margin-bottom: 4px;
+    font-family: 'Audiowide-Regular', Courier, monospace;
   }
 
   #player-health {
@@ -195,6 +203,7 @@
     display: flex;
     align-items: center;
     justify-content: space-evenly;
+    font-family: 'Audiowide-Regular', Courier, monospace;
   }
 
   #ammoHUD > p > img{
@@ -210,7 +219,7 @@
     font-size: 24px;
     color: white;
     font-family: Arial, sans-serif;
-    background: url(./images/hud2.png) no-repeat center center;
+    background: url(./assets/images/hud2.png) no-repeat center center;
     background-size: cover;
     padding: 10px;
     border-radius: 5px;
@@ -223,11 +232,11 @@
     top: 20px;
     right: 20px;
     padding: 15px 15px;
-    background: url(./images/hud2.png) no-repeat center center;
+    background: url(./assets/images/hud2.png) no-repeat center center;
     background-size: cover;
     color: white;
     font-size: 12px;
-    font-family: "Arial", sans-serif;
+    font-family: "Audiowide-Regular", sans-serif;
     text-align: center;
     height: 44px;
 }
@@ -239,28 +248,31 @@
     gap: 2px;
     margin: 0;
     margin-top: 6px;
+    font-family: 'Audiowide-Regular', Courier, monospace;
 }
 
 /* Game Over Popup */
-#game-over-popup {
+#game-over-popup, #game-won-popup {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 500px;
     padding: 60px;
-    background: url(./images/hud3.png) no-repeat center center;
+    background: url(./assets/images/hud3.png) no-repeat center center;
     background-size: cover;
     color: white;
     text-align: center;
     height: 240px;
     display: none;
+    font-family: 'Audiowide-Regular', Courier, monospace;
 }
 
 #game-over-popup h2 {
     margin-top: 6%;
     margin-top: 10%;
     color: #631c80;
+    font-family: 'Audiowide-Regular', Courier, monospace;
 }
 
 #game-over-popup button {
@@ -277,4 +289,175 @@
 
 #game-over-popup button:hover {
     background: #cc0000;
+}
+
+
+body {
+  margin: 0;
+  overflow: hidden;
+  font-family: sans-serif;
+}
+/* html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+}
+
+body {
+  background: #303035;
+}
+
+#root::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/view.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  pointer-events: none;
+} */
+#ui,
+.menu,
+.splash {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 1);
+  color: white;
+  z-index: 99999;
+}
+.hidden {
+  display: none !important;
+}
+button {
+  margin: 10px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+.body {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* background: #191c29; */
+}
+.card {
+  width: var(--card-width);
+  height: var(--card-height);
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding: 0 36px;
+  perspective: 2500px;
+  margin: 0 15px;
+}
+
+.cover-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.wrapper {
+  transition: all 0.5s;
+  position: absolute;
+  width: 100%;
+  z-index: -1;
+}
+
+.card:hover .wrapper {
+  transform: perspective(900px) translateY(-5%) rotateX(25deg)
+    translateZ(0);
+  box-shadow: 2px 35px 32px -8px rgba(0, 0, 0, 0.75);
+  -webkit-box-shadow: 2px 35px 32px -8px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 2px 35px 32px -8px rgba(0, 0, 0, 0.75);
+}
+
+.wrapper::before,
+.wrapper::after {
+  content: "";
+  opacity: 0;
+  width: 100%;
+  height: 80px;
+  transition: all 0.5s;
+  position: absolute;
+  left: 0;
+}
+.wrapper::before {
+  top: 0;
+  height: 100%;
+  background-image: linear-gradient(
+    to top,
+    transparent 46%,
+    rgba(12, 13, 19, 0.5) 68%,
+    rgba(12, 13, 19) 97%
+  );
+}
+.wrapper::after {
+  bottom: 0;
+  opacity: 1;
+  background-image: linear-gradient(
+    to bottom,
+    transparent 46%,
+    rgba(12, 13, 19, 0.5) 68%,
+    rgba(12, 13, 19) 97%
+  );
+}
+
+.card:hover .wrapper::before,
+.wrapper::after {
+  opacity: 1;
+}
+
+.card:hover .wrapper::after {
+  height: 120px;
+}
+.title {
+  width: 100%;
+  transition: transform 0.5s;
+}
+.card:hover .title {
+  transform: translate3d(0%, -50px, 100px);
+}
+
+.character {
+  width: 100%;
+  opacity: 0;
+  transition: all 0.5s;
+  position: absolute;
+  z-index: -1;
+}
+
+.card:hover .character {
+  opacity: 1;
+  transform: translate3d(0%, -30%, 100px);
+}
+
+#levelButtons {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+}
+.disabled-card {
+  pointer-events: none;
+  opacity: 0.4;
+  filter: grayscale(100%);
 }

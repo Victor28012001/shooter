@@ -1,37 +1,21 @@
-// Set up the scene
-var scene = new THREE.Scene();
-var camera = new THREE.PerspectiveCamera(
-  75,
-  window.innerWidth / window.innerHeight,
-  0.1,
-  1000
-);
-camera.position.set(0, 1, 0); // Set camera position 0.1 units above the grid
+import cannonEsDebugger from "https://cdn.jsdelivr.net/npm/cannon-es-debugger@1.0.0/+esm";
+let scene, camera, renderer, controls, tommyGunLight;
 
-// Adjust the camera's near clipping plane value
-camera.near = 0.015; // Set a smaller value, like 0.1
-camera.updateProjectionMatrix();
-
-// Setup Gun Object
-// 3D Abandoned Building MOdel
+let currentLevel = 0;
+let unlockedLevels = parseInt(localStorage.getItem("unlockedLevels")) || 1;
+const totalLevels = 8;
+let levelData = [];
 var abandonedBuilding;
-//Array for bullet hole meshes
+var testRoom;
 let bulletHoles = [];
-//Gun Firing Variable to track when gun is firing
 let isFiring = false;
 let isMoving = false;
-// Counter variable to keep track of the number of bullets
 var bulletCount = 0;
-let maxMagazineSize = 30; // Bullets per reload
-let totalBullets = 90; // Total bullets player has
-let currentBullets = maxMagazineSize; // Start with full magazine
+let maxMagazineSize = 30;
+let totalBullets = 90;
+let currentBullets = maxMagazineSize;
 let isReloading = false;
 
-// DOM Elements
-const currentBulletsDisplay = document.getElementById("currentBullets");
-const totalBulletsDisplay = document.getElementById("totalBullets");
-const reloadMessage = document.getElementById("reloadMessage");
-let playerHealth = 100;
 let player = {
   health: 100,
   lastAttackTime: null,
@@ -39,8 +23,77 @@ let player = {
 };
 let totalSpiders;
 let spawnedSpiders;
+let paused = false;
+let playerBody;
+let roomBody;
+let collisionState = false;
+let collidedBody = null;
+let animationFrameId;
+let isEnded = false;
+let audioContext;
+let machineGunSoundBuffer;
+let bulletRicochetSoundBuffer;
+const clock = new THREE.Clock();
+var raycaster = new THREE.Raycaster();
+var mouse = new THREE.Vector2();
+var bullets = [];
+let roomBodies;
+
+let roomWidth = 9.5;
+let wallHeight = 3.8;
+let roomDepth = 9.5;
+
+let animalMeshes = [];
+let mixers = [];
+let tommyGun,
+  tommyGunAnimations = {};
+let tommyGunMixer;
+let limit = 12;
+let lastMeshAdditionTime = 0;
+let gameStarted = false;
+const meshAdditionInterval = 100;
+var currentAnimation = "";
+// Keyboard controls
+var moveForward = false;
+var moveBackward = false;
+var moveLeft = false;
+var moveRight = false;
+
+const currentCollisions = new Set();
+
+// DOM Elements
+const currentBulletsDisplay = document.getElementById("currentBullets");
+const totalBulletsDisplay = document.getElementById("totalBullets");
+const reloadMessage = document.getElementById("reloadMessage");
+const splash = document.getElementById("splash");
+const menu = document.getElementById("menu");
+const levelButtons = document.getElementById("levelButtons");
+const startButton = document.getElementById("startButton");
+const resetProgress = document.getElementById("resetProgress");
+var blocker = document.getElementById("blocker");
+var instructions = document.getElementById("instructions");
+var playButton = document.getElementById("playButton");
 
 const loadingManager = new THREE.LoadingManager();
+const world = new CANNON.World();
+let cannonDebugger; // Initialize with a default value
+
+var loader = new THREE.GLTFLoader(loadingManager);
+let killedSpiders = 0;
+
+const textureLoader = new THREE.TextureLoader(loadingManager);
+
+startButton.addEventListener("click", async () => {
+  splash.classList.add("hidden");
+  await loadAllLevels();
+  showLevelMenu();
+});
+
+resetProgress.addEventListener("click", async () => {
+  resetProgressfunc();
+});
+
+const phongMaterial = new THREE.MeshPhongMaterial();
 
 // Update loading bar on progress
 loadingManager.onProgress = function (url, loaded, total) {
@@ -48,6 +101,20 @@ loadingManager.onProgress = function (url, loaded, total) {
   document.getElementById("loadingProgress").style.width = progress + "%";
   blocker.style.display = "none";
 };
+
+// Key handler for toggling pause/play on 'P' key
+window.addEventListener("keydown", (event) => {
+  if (event.key.toLowerCase() === "p" || event.key.toUpperCase() === "p") {
+    paused = !paused;
+
+    if (paused) {
+      controls.unlock();
+    } else {
+      controls.lock();
+      animate();
+    }
+  }
+});
 
 // When all assets are loaded, show the play button
 loadingManager.onLoad = function () {
@@ -68,62 +135,309 @@ function updateAmmoHUD() {
   }
 }
 
-// Create the renderer
-var renderer = new THREE.WebGLRenderer({});
-renderer.physicallyCorrectLights;
-// Configure renderer settings
-renderer.setPixelRatio(window.devicePixelRatio);
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
+function initScene() {
+  // Scene
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x000000);
 
-const clock = new THREE.Clock();
+  // Camera
+  camera = new THREE.PerspectiveCamera(
+    75,
+    window.innerWidth / window.innerHeight,
+    0.015, // near clipping plane
+    1000
+  );
+  camera.position.set(12, 1, 12);
+  camera.near = 0.015;
+  camera.updateProjectionMatrix();
 
-//Create ray caster instance
-var raycaster = new THREE.Raycaster();
-//Create mouse instance
-var mouse = new THREE.Vector2();
-//Create array to store bullets
-var bullets = [];
+  // Renderer
+  renderer = new THREE.WebGLRenderer({});
+  renderer.physicallyCorrectLights = true;
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  document.body.appendChild(renderer.domElement);
 
-let animalMeshes = []; // Declare the array to store animal models
-let mixers = []; // Declare mixers array
-let tommyGun,
-  tommyGunAnimations = {};
-let tommyGunMixer;
-let limit = 12; // Limit the number of spiders
+  // Lighting
+  const ambientLight = new THREE.AmbientLight(0xffffff, 2);
+  scene.add(ambientLight);
 
-// Variables for tracking time and adding bullet hole meshes
-let lastMeshAdditionTime = 0;
-const meshAdditionInterval = 100; // Interval duration in milliseconds
+  tommyGunLight = new THREE.PointLight(0xb69f66, 100, 100);
+  tommyGunLight.position.set(0, 0, 0);
+  tommyGunLight.visible = false;
+  scene.add(tommyGunLight);
 
-// Keyboard controls
-var moveForward = false;
-var moveBackward = false;
-var moveLeft = false;
-var moveRight = false;
+  // PointerLock Controls
+  controls = new THREE.PointerLockControls(camera, document.body);
 
-///flashing light // Create a point light
-const tommyGunLight = new THREE.PointLight(0xb69f66, 100, 100); // Adjust the light color and intensity as needed
-tommyGunLight.position.set(0, 0, 0); // Set the light position
-tommyGunLight.visible = false;
-// Add the light to the scene initially
-scene.add(tommyGunLight);
+  controls.addEventListener("lock", function () {
+    instructions.style.display = "none";
+    blocker.style.display = "none";
+    document.getElementById("crosshair").style.display = "block";
+  });
 
-// Gravity effect variables
-var gravity = new THREE.Vector3(0, -0.01, 0); // Adjust the gravity strength as needed
-var maxGravityDistance = 2; // Adjust the maximum distance affected by gravity as needed
+  controls.addEventListener("unlock", function () {
+    instructions.style.display = "";
+    document.getElementById("crosshair").style.display = "none";
+  });
 
-// Add PointerLockControls
-var controls = new THREE.PointerLockControls(camera, document.body);
+  scene.add(controls.getObject());
 
-// Create a grid
-var gridHelper = new THREE.GridHelper(20, 20);
-scene.add(gridHelper);
+  // Handle window resize
+  window.addEventListener("resize", () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
 
-// Set up pointer lock controls
-var blocker = document.getElementById("blocker");
-var instructions = document.getElementById("instructions");
-var playButton = document.getElementById("playButton");
+  // Add event listeners for the mouse down and mouse up events
+  window.addEventListener("mousedown", onMouseDown);
+  window.addEventListener("mouseup", onMouseUp);
+  document.addEventListener("mousemove", onMouseMove, false);
+
+  //   Event listener for mouse down event
+  document.addEventListener("mousedown", function (event) {
+    if (
+      controls.isLocked &&
+      event.button === 0 &&
+      event.target.id !== "playButton" &&
+      isFiring === true
+    ) {
+      playMachineGunSound();
+    }
+  });
+
+  // Event listener for mouse up event
+  document.addEventListener("mouseup", function (event) {
+    if (event.button === 0) {
+      setTimeout(() => {
+        tommyGunLight.visible = false;
+        isFiring = false;
+      }, 100);
+    }
+  });
+
+  // Optional: initialize physics after setting up scene
+  if (typeof initPhysics === "function") {
+    initPhysics();
+  }
+}
+
+function initPhysics() {
+  world.gravity.set(0, -9.82, 0);
+  world.broadphase = new CANNON.NaiveBroadphase();
+  world.solver.iterations = 10;
+
+  const planeGeometry = new THREE.PlaneGeometry(250, 250, 250, 250);
+  const planeMesh = new THREE.Mesh(planeGeometry, phongMaterial);
+  planeMesh.rotateX(-Math.PI / 2);
+  planeMesh.position.y = -0.5;
+  planeMesh.receiveShadow = true;
+  scene.add(planeMesh);
+
+  const floorShape = new CANNON.Plane();
+  const floorBody = new CANNON.Body({
+    mass: 0,
+    position: new CANNON.Vec3(0, 0, 0),
+  });
+  floorBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2);
+  floorBody.addShape(floorShape);
+  floorBody.name = "Floor";
+  world.addBody(floorBody);
+
+  cannonDebugger = cannonEsDebugger(scene, world, {
+    color: 0x00ff00,
+  });
+
+  world.addEventListener("postStep", () => {
+    let stillColliding = new Set();
+
+    world.contacts.forEach((contact) => {
+      const { bi, bj } = contact;
+      let other = null;
+
+      if (bi === playerBody) other = bj;
+      else if (bj === playerBody) other = bi;
+
+      if (other && other.name === "Room") {
+        stillColliding.add(other.id);
+
+        if (!currentCollisions.has(other.id)) {
+          console.log("Entered building:", other.id);
+          currentCollisions.add(other.id);
+          collisionState = true;
+          if (moveForward) controls.moveForward(-controls.speed);
+          else if (moveBackward) controls.moveForward(controls.speed);
+          else if (moveLeft) controls.moveRight(controls.speed);
+          else if (moveRight) controls.moveRight(-controls.speed);
+          collisionState = false;
+          // handle enter logic
+        }
+      }
+    });
+
+    // Exit logic
+    for (const id of currentCollisions) {
+      if (!stillColliding.has(id)) {
+        // console.log("Exited building:", id);
+        currentCollisions.delete(id);
+        collisionState = false;
+        // handle exit logic
+      }
+    }
+  });
+}
+
+async function loadAllLevels() {
+  levelData = [];
+  for (let i = 1; i <= totalLevels; i++) {
+    const res = await fetch(`levels/level${i}.json`);
+    const json = await res.json();
+    levelData.push(json);
+  }
+}
+
+function showLevelMenu() {
+  levelButtons.innerHTML = "";
+
+  for (let i = 0; i < levelData.length; i++) {
+    const level = levelData[i];
+
+    const anchor = document.createElement("div");
+    anchor.className = "level-card";
+    anchor.style.position = "relative";
+
+    // Level number
+    const levelNumber = document.createElement("span");
+    levelNumber.textContent = `Level ${i + 1}`;
+    levelNumber.style.position = "absolute";
+    levelNumber.style.top = "50px";
+    levelNumber.style.left = "50%";
+    levelNumber.style.transform = "translateX(-50%)";
+    levelNumber.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+    levelNumber.style.color = "#fff";
+    levelNumber.style.fontSize = "20px";
+    levelNumber.style.padding = "5px 10px";
+    anchor.appendChild(levelNumber);
+
+    const card = document.createElement("div");
+    card.className = "card";
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "wrapper";
+
+    const coverImg = document.createElement("img");
+    coverImg.src =
+      "./assets/images/force_mage-cover.jpg";
+    coverImg.className = "cover-image";
+
+    const titleImg = document.createElement("img");
+    titleImg.src =
+      "./assets/images/force_mage-title.png";
+    titleImg.className = "title";
+
+    const charImg = document.createElement("img");
+    charImg.src =
+      "./assets/images/force_mage-character.webp";
+    charImg.className = "character";
+
+    wrapper.appendChild(coverImg);
+    card.appendChild(wrapper);
+    card.appendChild(titleImg);
+    card.appendChild(charImg);
+    anchor.appendChild(card);
+
+    if (i >= unlockedLevels) {
+      // If locked, make it visually and functionally unclickable
+      anchor.classList.add("disabled-card");
+      anchor.style.pointerEvents = "none"; // <-- This disables all clicks
+      anchor.style.opacity = "0.4"; // Optional: visual indicator
+    } else {
+      // Only attach click event if the level is unlocked
+      anchor.addEventListener("click", () => loadLevel(i));
+    }
+
+    levelButtons.appendChild(anchor);
+  }
+
+  menu.classList.remove("hidden");
+}
+
+function loadLevel(index) {
+  currentLevel = index;
+  menu.classList.add("hidden");
+  initScene();
+  buildLevel(levelData[index]);
+}
+
+const gridScale = 10;
+
+function buildLevel(level) {
+  // Wait until the model is loaded before placing anything
+  if (!abandonedBuilding) {
+    // console.warn("Model not loaded yet. Retrying...");
+    setTimeout(() => buildLevel(level), 100); // Try again shortly
+    return;
+  }
+
+  roomBodies = [];
+
+  for (const box of level.objects) {
+    const modelClone = abandonedBuilding.clone(); // Clone the model
+
+    // Set the position of the clone based on grid scale
+    modelClone.position.set(
+      box[0] * gridScale,
+      box[1] * gridScale,
+      box[2] * gridScale
+    );
+    scene.add(modelClone); // Add the clone to the scene
+
+    // Apply the physics body to the clone
+    const roomBodyClone = new CANNON.Body({
+      mass: 0, // Static body
+      position: new CANNON.Vec3(
+        box[0] * gridScale,
+        box[1] * gridScale,
+        box[2] * gridScale - 0.35
+      ),
+    });
+
+    // Shape and size of the physics body based on room dimensions
+    const boxShape = new CANNON.Box(
+      new CANNON.Vec3(roomWidth / 2 + 0.25, wallHeight, roomDepth / 2 + 0.25)
+    );
+    roomBodyClone.addShape(boxShape); // Add the shape to the physics body
+
+    // Set up collision response and properties for the body
+    roomBodyClone.collisionResponse = true;
+    roomBodyClone.name = "Room";
+    roomBodies.push(roomBodyClone);
+
+    // Add the physics body to the world
+    world.addBody(roomBodyClone);
+  }
+
+  // Add the goal to the scene
+  const goal = new THREE.Mesh(
+    new THREE.SphereGeometry(0.5),
+    new THREE.MeshBasicMaterial({ color: 0xffff00 })
+  );
+
+  const [x, y, z] = level.target;
+  goal.position.set(x * gridScale, y * gridScale + 1.6, z * gridScale);
+  goal.name = "goal";
+  scene.add(goal);
+
+  // Load the player and other level elements
+  loadPlayer();
+}
+
+function resetProgressfunc() {
+  localStorage.removeItem("unlockedLevels");
+  unlockedLevels = 1;
+  showLevelMenu();
+}
 
 playButton.addEventListener("click", function () {
   controls.lock();
@@ -133,69 +447,55 @@ playButton.addEventListener("click", function () {
   document.getElementById("splashScreen").style.opacity = "0";
   setTimeout(() => {
     document.getElementById("splashScreen").style.display = "none";
-  }, 1000); // Remove after fade out
-
-  // 🟢 Show HUD
-  // document.getElementById("hud").style.display = "block";
+  }, 1000);
 });
-
-controls.addEventListener("lock", function () {
-  instructions.style.display = "none";
-  blocker.style.display = "none";
-  document.getElementById("crosshair").style.display = "block"; // Show the crosshair when screen is locked
-});
-
-controls.addEventListener("unlock", function () {
-  //   blocker.style.display = "block";
-  instructions.style.display = "";
-  document.getElementById("crosshair").style.display = "none"; // Hide the crosshair when screen is unlocked
-});
-
-// Resize renderer when window size changes
-window.addEventListener("resize", function () {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-});
-
-let gameStarted = false;
-
-scene.add(controls.getObject());
-
-// Create an ambient light with brightness
-var ambientLight = new THREE.AmbientLight(0xffffff, 2); // Adjust the color as needed
-scene.add(ambientLight);
 
 await loadAnimal();
 
-var loader = new THREE.GLTFLoader(loadingManager);
-loader.load("./models/fps_animations_lowpoly_mp5.glb", function (gltf) {
-  gltf.scene.scale.set(0.05, 0.05, 0.05);
-  gltf.scene.updateMatrixWorld(true);
+function loadPlayer() {
+  loader.load("./assets/models/fps_animations_lowpoly_mp5-opt.glb", function (gltf) {
+    gltf.scene.scale.set(0.05, 0.05, 0.05);
+    gltf.scene.updateMatrixWorld(true);
 
-  // Store tommyGun globally
-  tommyGun = gltf.scene;
-  scene.add(tommyGun);
+    // Store tommyGun globally
+    tommyGun = gltf.scene;
+    scene.add(tommyGun);
 
-  // ✅ Store animations globally
-  gltf.animations.forEach((animation) => {
-    tommyGunAnimations[animation.name] = animation;
+    // ✅ Store animations globally
+    gltf.animations.forEach((animation) => {
+      tommyGunAnimations[animation.name] = animation;
+    });
+
+    // ✅ Create and store an animation mixer
+    tommyGunMixer = new THREE.AnimationMixer(tommyGun);
+    mixers.push(tommyGunMixer); // Ensure it's updated in animate()
+
+    // ✅ Create physics body for the player
+    const playerShape = new CANNON.Box(new CANNON.Vec3(0.5, 1.5, 0.5)); // Adjust based on model size
+    playerBody = new CANNON.Body({
+      mass: 70, // Mass of the player
+      position: new CANNON.Vec3(0, 5, 0), // Initial position
+    });
+    playerBody.collisionResponse = true;
+    playerBody.name = "Player"; // Name the body for debugging
+    playerBody.type = CANNON.Body.DYNAMIC; // Dynamic body for player
+
+    // Add the shape to the physics body
+    playerBody.addShape(playerShape);
+    world.addBody(playerBody);
+
+    playAnimation("Arms_Draw");
+
+    setTimeout(() => {
+      playAnimation("Arms_Idle");
+    }, 1000); // Delay to allow for loading
+
+    // Add a point light to the gun
+    var tommyGunLight = new THREE.PointLight(0xb69f66, 0.5); //#b69f66
+    tommyGunLight.position.set(-0.065, -0.45, 0);
+    tommyGun.add(tommyGunLight);
   });
-
-  // ✅ Create and store an animation mixer
-  tommyGunMixer = new THREE.AnimationMixer(tommyGun);
-  mixers.push(tommyGunMixer); // Ensure it's updated in animate()
-
-  // ✅ Play idle animation by default
-  playAnimation("Arms_Idle");
-
-  // Add a point light to the gun
-  var tommyGunLight = new THREE.PointLight(0xb69f66, 0.5); //#b69f66
-  tommyGunLight.position.set(-0.065, -0.45, 0);
-  tommyGun.add(tommyGunLight);
-});
-
-var currentAnimation = "";
+}
 
 function startGame() {
   if (gameStarted) return; // Prevent multiple clicks
@@ -217,19 +517,15 @@ function playAnimation(name) {
   if (currentAnimation === name) return; // ✅ Prevent restarting the same animation
 
   currentAnimation = name;
-  // ✅ Stop previous animations
   tommyGunMixer.stopAllAction();
 
-  // ✅ Play the new animation
   const action = tommyGunMixer.clipAction(tommyGunAnimations[name]);
   action.reset().fadeIn(0.2).play();
 }
 
-//Load building model
-loader.load("./models/low_poly_abandoned_brick_room.glb", function (gltf) {
+loader.load("./assets/models/low_poly_abandoned_brick_room-opt.glb", function (gltf) {
   abandonedBuilding = gltf.scene;
-  abandonedBuilding.position.y = 0.008;
-  scene.add(abandonedBuilding);
+  abandonedBuilding.position.y = 0.01;
 });
 
 var onKeyDown = function (event) {
@@ -241,7 +537,10 @@ var onKeyDown = function (event) {
     case 32: // space bar
       isFiring = true;
       playAnimation("Arms_Fire");
-      playMachineGunSound();
+      if (currentBullets > 0) {
+        console.log(currentBullets)
+        playMachineGunSound();
+      }
       break;
     case 82: // R key
       // isReloading = true;
@@ -294,9 +593,8 @@ var onKeyUp = function (event) {
 document.addEventListener("keydown", onKeyDown);
 document.addEventListener("keyup", onKeyUp);
 
-// Check collision with the grid
 function checkCollision(position) {
-  var gridSize = 20;
+  var gridSize = 250; // Match GridHelper size
   var halfGridSize = gridSize / 2;
   var margin = 0.1;
 
@@ -306,91 +604,101 @@ function checkCollision(position) {
     position.z < -halfGridSize + margin ||
     position.z > halfGridSize - margin
   ) {
-    return true; // Collision detected
+    return true; // Collision detected (player hit boundary)
   }
 
   return false; // No collision
 }
 
-function fireShotGunSpheres() {
-  // Loop 20 times to create 20 spheres
-  for (var i = 0; i < 20; i++) {
-    // Create a sphere geometry with a radius of 0.05 units and 32 segments on each axis
-    var sphere = new THREE.SphereGeometry(0.05, 32, 32);
-
-    // Create a basic mesh material with a yellow color
-    var material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
-
-    // Combine the sphere geometry and material to create a mesh
-    var sphereMesh = new THREE.Mesh(sphere, material);
-
-    // Set the sphere position to a random position within a 0.5 unit cube area relative to the shotgun object position
-    sphereMesh.position.x = camera.position.x + (Math.random() * 0.5 - 0.25);
-    sphereMesh.position.y =
-      camera.position.y + (Math.random() * 0.5 - 0.25) - 1;
-    sphereMesh.position.z = camera.position.z + (Math.random() * 0.5 - 0.25);
-
-    // Add the sphere to the scene
-    scene.add(sphereMesh);
-
-    // Add the sphere to the shotGunSpheres array
-    shotGunSpheres.push(sphereMesh);
-  }
-}
-
-function animateShotGunParticles() {
-  // Loop through each sphere in the shotGunSpheres array
-  for (var i = 0; i < shotGunSpheres.length; i++) {
-    // Get the current sphere
-    var sphere = shotGunSpheres[i];
-
-    // Copy the rotation of the camera to the sphere
-    sphere.rotation.copy(camera.rotation);
-
-    // Calculate the distance between the sphere and the starting position
-    var distance = sphere.position.distanceTo(shotgunObject.position);
-
-    // If the distance is less than 10 units, move the sphere in a random direction on the x and y axis and down the -z axis
-    if (distance < 10) {
-      sphere.translateX(Math.random() * 2 - 1);
-      sphere.translateY(Math.random() * 2 - 1);
-      sphere.translateZ(-3);
-    }
-
-    // If the distance is less than 1 unit, hide the sphere
-    if (distance < 1) {
-      sphere.visible = false;
-    }
-
-    // If the distance is greater than 1 unit, show the sphere
-    if (distance > 1) {
-      sphere.visible = true;
-    }
-
-    // If the distance is greater than or equal to 10 units, remove the sphere from the scene and splice it from the shotGunSpheres array
-    if (distance >= 10) {
-      scene.remove(sphere);
-      shotGunSpheres.splice(i, 1);
+function disposeObject(obj) {
+  if (obj.geometry) obj.geometry.dispose();
+  if (obj.material) {
+    if (Array.isArray(obj.material)) {
+      obj.material.forEach((mat) => mat.dispose());
+    } else {
+      obj.material.dispose();
     }
   }
 }
 
-let animationFrameId;
-let isEnded = false;
+function cleanupScene() {
+  console.log("🧹 cleanupScene called");
+  // renderer.renderLists.dispose();
+
+  // Dispose and remove all children
+  while (scene.children.length > 0) {
+    const child = scene.children[0];
+    console.log("Disposing child:", child.name || child.type);
+    disposeObject(child);
+    scene.remove(child);
+  }
+
+  console.log("Scene children after:", scene.children.length);
+
+  // Remove all physics bodies
+  while (world.bodies.length > 0) {
+    world.removeBody(world.bodies[0]);
+  }
+
+  console.log("World bodies after:", world.bodies.length);
+
+  showLevelMenu(); // Optional UI step
+}
+
+let isEnded1
 
 function animate() {
   const delta = clock.getDelta();
+
+  if (paused) {
+    cancelAnimationFrame(animationFrameId); // Stop animation
+    return; // Exit the function early
+  }
+
+  if (playerBody && roomBodies.length > 0) {
+    for (let roomBody of roomBodies) {
+      const pos = playerBody.position;
+      const up = roomBody.aabb.upperBound;
+      const low = roomBody.aabb.lowerBound;
+
+      const withinX = pos.x > low.x && pos.x < up.x;
+      const withinY = pos.y > low.y && pos.y < up.y;
+      const withinZ = pos.z > low.z && pos.z < up.z;
+
+      if (withinX && withinY && withinZ) {
+        // ✅ Collision logic
+        collisionState = true;
+        // controls.speed = 0;
+
+        if (moveForward) controls.moveForward(-controls.speed);
+        else if (moveBackward) controls.moveForward(controls.speed);
+        else if (moveLeft) {
+          controls.moveRight(controls.speed);
+          controls.speed = 0;
+        } else if (moveRight) {
+          controls.moveRight(-controls.speed);
+          controls.speed = 0;
+        }
+      } else {
+        collisionState = false;
+      }
+    }
+  }
+
   mixers.forEach((mixer) => mixer.update(delta)); // Ensure animations run
 
+  world.step(delta);
+  world.solver.iterations = 10;
+
   if (isEnded) {
-    cancelAnimationFrame(animationFrameId); // Stop animation
-    return; // Exit function to prevent further updates
+    cancelAnimationFrame(animationFrameId); // Stop animation if the game ends
+    return; // Exit the function to prevent further updates
   }
 
   updateBullets();
   updateAnimals();
 
-  //ramp up player movement speed and direction
+  // Ramp up player movement speed and direction
   if (controls.isLocked) {
     var acceleration = 0.003; // Speed increment per frame
     var maxWalkSpeed = 0.05; // Max speed for walking
@@ -401,28 +709,40 @@ function animate() {
       controls.speed = Math.min(controls.speed + acceleration, maxRunSpeed);
       controls.moveForward(controls.speed);
       isMoving = true;
-      if (checkCollision(controls.getObject().position)) {
+      if (
+        checkCollision(controls.getObject().position) ||
+        collisionState == true
+      ) {
         controls.moveForward(-controls.speed); // Move back if collision
       }
     } else if (moveBackward) {
       controls.speed = Math.min(controls.speed + acceleration, maxRunSpeed);
       controls.moveForward(-controls.speed);
       isMoving = true;
-      if (checkCollision(controls.getObject().position)) {
+      if (
+        checkCollision(controls.getObject().position) ||
+        collisionState == true
+      ) {
         controls.moveForward(controls.speed); // Move back if collision
       }
     } else if (moveLeft) {
       controls.speed = Math.min(controls.speed + acceleration, maxRunSpeed);
       controls.moveRight(-controls.speed);
       isMoving = true;
-      if (checkCollision(controls.getObject().position)) {
+      if (
+        checkCollision(controls.getObject().position) ||
+        collisionState == true
+      ) {
         controls.moveRight(controls.speed); // Move back if collision
       }
     } else if (moveRight) {
       controls.speed = Math.min(controls.speed + acceleration, maxRunSpeed);
       controls.moveRight(controls.speed);
       isMoving = true;
-      if (checkCollision(controls.getObject().position)) {
+      if (
+        checkCollision(controls.getObject().position) ||
+        collisionState == true
+      ) {
         controls.moveRight(-controls.speed); // Move back if collision
       }
     } else {
@@ -430,6 +750,7 @@ function animate() {
     }
   }
 
+  // Check if the player is moving and update animations accordingly
   if (isMoving) {
     if (controls.speed >= speedThreshold) {
       playAnimation("Arms_Run"); // Running animation at high speed
@@ -446,12 +767,15 @@ function animate() {
     playAnimation("Arms_Walk");
   } else if (isReloading) {
     playAnimation("Arms_fullreload");
+    setTimeout(() => {
+      playAnimation("Arms_Idle");
+    }, 3500);
   } else {
     playAnimation("Arms_Idle");
   }
 
+  // Match tommy gun to player camera position
   if (tommyGun) {
-    // Match tommy gun to player camera position
     tommyGun.position.copy(camera.position);
     tommyGun.rotation.copy(camera.rotation);
     tommyGun.updateMatrix();
@@ -459,8 +783,11 @@ function animate() {
     tommyGun.translateY(-0.08);
     tommyGun.translateX(-0.018);
     tommyGun.rotateY(-Math.PI);
+    playerBody.position.copy(tommyGun.position);
+    playerBody.quaternion.copy(tommyGun.quaternion);
   }
 
+  // Handle firing actions
   if (isFiring) {
     const currentTime = performance.now();
 
@@ -477,10 +804,9 @@ function animate() {
       });
 
       if (finLowObject) {
-        // ✅ Ensure it exists before using it
+        // Ensure it exists before using it
         const worldPosition = new THREE.Vector3();
         finLowObject.getWorldPosition(worldPosition);
-        // if (isReloading) return;
 
         if (currentBullets > 0) {
           currentBullets--; // Reduce bullets when shooting
@@ -496,24 +822,64 @@ function animate() {
         }
 
         updateAmmoHUD();
-      } else {
       }
     }
 
     checkBulletCollision();
   }
 
-  //face bullet holes
+
+  const playerPos = controls.getObject().position;
+  const goal = scene.getObjectByName("goal");
+
+  if (goal && playerPos.distanceTo(goal.position) < 1) {
+    controls.unlock();
+    scene.remove(goal);
+  
+    if (currentLevel + 1 < totalLevels) {
+      unlockedLevels = Math.max(unlockedLevels, currentLevel + 2);
+      localStorage.setItem("unlockedLevels", unlockedLevels);
+  
+      isEnded = true;
+  
+      if (isEnded) {
+        loadNextLevel(); // This now resets and loads the next level properly
+      }
+    }
+  
+    showLevelMenu(); // optional UI update
+  }
+  
+
+  // Face bullet holes
   faceBulletHolesToCamera();
 
+  // Update cannon debugger (if any)
+  cannonDebugger.update();
+
+  // Render the scene
   renderer.render(scene, camera);
 
+  // Request the next animation frame
   animationFrameId = requestAnimationFrame(animate);
 }
 
+function loadNextLevel() {
+  currentCollisions.clear();     // Clear previous collisions
+  isEnded = true;               // Reset game end state
+  currentLevel++;                // Go to the next level
+
+  cancelAnimationFrame(animationFrameId); // Stop previous animation frame
+  cleanupScene();               // Clean up scene and physics
+  location.reload()
+ console.log("ok")
+
+  loadLevel(currentLevel);      // Load the new level using your method
+}
+
+
 updateAmmoHUD();
 
-// **Reloading Mechanic**
 function reload() {
   if (isReloading || currentBullets === maxMagazineSize || totalBullets === 0)
     return;
@@ -532,12 +898,8 @@ function reload() {
     isReloading = false;
 
     updateAmmoHUD();
-  }, 2000); // Reload takes 2 seconds
+  }, 3500); // Reload takes 3 seconds
 }
-
-// Add event listeners for the mouse down and mouse up events
-window.addEventListener("mousedown", onMouseDown);
-window.addEventListener("mouseup", onMouseUp);
 
 function onMouseDown(event) {
   // Check if the left mouse button is pressed (button code 0)
@@ -584,7 +946,6 @@ function onMouseMove(event) {
 }
 
 // Mouse click event listener
-document.addEventListener("mousemove", onMouseMove, false);
 
 function faceBulletHolesToCamera() {
   bulletHoles.forEach(function (bulletHole) {
@@ -604,8 +965,6 @@ function faceBulletHolesToCamera() {
     bulletHole.setRotationFromQuaternion(quaternion);
   });
 }
-
-let killedSpiders = 0;
 
 function checkBulletCollision() {
   bullets.forEach(function (bullet) {
@@ -655,9 +1014,9 @@ function checkBulletCollision() {
           scene.remove(bullet.mesh);
           bullets.splice(index, 1);
         } else {
-          console.warn(
-            `⚠️ Bullet at index ${index} does not exist or has no mesh.`
-          );
+          // console.warn(
+          //   `⚠️ Bullet at index ${index} does not exist or has no mesh.`
+          // );
         }
 
         // ✅ Update Health Bar
@@ -689,7 +1048,7 @@ function checkBulletCollision() {
 
       var loader = new THREE.TextureLoader();
       var material = new THREE.MeshBasicMaterial({
-        map: loader.load("./images/bullet-hole.png"),
+        map: loader.load("./assets/images/bullet-hole.png"),
         side: THREE.DoubleSide,
         transparent: true,
         depthWrite: true,
@@ -791,11 +1150,6 @@ function updateBullets() {
   }
 }
 
-// Variables for audio context and machine gun sound
-let audioContext;
-let machineGunSoundBuffer;
-let bulletRicochetSoundBuffer;
-
 // Function to load an audio file
 function loadAudioFile(url, callback) {
   const request = new XMLHttpRequest();
@@ -864,12 +1218,13 @@ function playBulletRicochetSound() {
 
 async function loadAnimal() {
   const gltfLoader = new THREE.GLTFLoader(loadingManager).setPath("./");
-  const animalGLTF = await gltfLoader.loadAsync("./models/voided_spider.glb");
+  const animalGLTF = await gltfLoader.loadAsync(
+    "./assets/models/voided_spider-opt.glb"
+  );
 
   // Store the loaded model for reuse
   window.animalGLTF = animalGLTF;
 }
-let model1;
 
 function addAnimal(posX) {
   if (!window.animalGLTF) {
@@ -1005,6 +1360,7 @@ function updateSpiderHUD() {
 }
 
 function spawnAnimals() {
+  // totalSpiders = 24; // Limit to 12 spiders
   totalSpiders = 24; // Limit to 12 spiders
   spawnedSpiders = 0;
 
@@ -1139,26 +1495,4 @@ function gameOver() {
 // Restart Game
 document.getElementById("restart-game").addEventListener("click", function () {
   location.reload();
-});
-
-//   Event listener for mouse down event
-document.addEventListener("mousedown", function (event) {
-  if (
-    controls.isLocked &&
-    event.button === 0 &&
-    event.target.id !== "playButton" &&
-    isFiring === true
-  ) {
-    playMachineGunSound();
-  }
-});
-
-// Event listener for mouse up event
-document.addEventListener("mouseup", function (event) {
-  if (event.button === 0) {
-    setTimeout(() => {
-      tommyGunLight.visible = false;
-      isFiring = false;
-    }, 100);
-  }
 });
