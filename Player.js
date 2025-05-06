@@ -10,7 +10,6 @@ import {
 import { endGame } from "./script.js";
 import { audio } from "./audio.js";
 
-
 export class Player {
   static gltf = null;
   static animations = {};
@@ -31,17 +30,7 @@ export class Player {
 
     this.initPhysics();
     // === Footstep Sound Setup ===
-    this.listener = new THREE.AudioListener();
-    this.camera.add(this.listener);
-
-    this.footstepSound = new THREE.Audio(this.listener);
-    const audioLoader = new THREE.AudioLoader();
-    audioLoader.load("./sounds/Step2.wav", (buffer) => {
-      this.footstepSound.setBuffer(buffer);
-      this.footstepSound.setLoop(false);
-      this.footstepSound.setVolume(0.5);
-    });
-
+    
     this.lastStepTime = 0;
     this.stepInterval = 400;
   }
@@ -272,13 +261,11 @@ export class Player {
       animationToPlay = speed >= speedThreshold ? "Arms_Run" : "Arms_Walk";
 
       if (now - this.lastStepTime > this.stepInterval) {
-        if (this.footstepSound.isPlaying) {
-          this.footstepSound.stop();
-        }
-        this.footstepSound.setPlaybackRate(0.9 + Math.random() * 0.2);
-        this.footstepSound.play();
+        const rate = 0.9 + Math.random() * 0.2;
+        audio.play("./sounds/Step2.wav", 0.5, false, rate);
         this.lastStepTime = now;
       }
+      
     }
 
     const nextAnim = getAnimationState(); // or use animationToPlay

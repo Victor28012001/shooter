@@ -1,0 +1,1903 @@
+<!-- From Uiverse.io by Novaxlo -->
+<div class="futuristic-input">
+  <div class="futuristic-input-space">
+    <div class="futuristic-input-space-2"></div>
+    <div class="triangle-input-up"></div>
+    <div class="triangle-input-bar2"></div>
+    <div class="triangle-input-left"></div>
+    <div class="futuristic-input-space-2"></div>
+    <div class="triangle-input-right2"></div>
+    <div class="triangle-input-bar3"></div>
+  </div>
+  <div class="futuristic-input-space">
+    <div class="triangle-input-up"></div>
+    <div class="triangle-input-bar"></div>
+  </div>
+  <div class="futuristic-input-space">
+    <div class="triangle-input-bar"></div>
+    <input type="text" name="text" class="input" />
+    <p class="futuristic-input-enter">ENTER</p>
+    <p class="futuristic-input-name">NAME</p>
+  </div>
+  <div class="futuristic-input-space">
+    <div class="triangle-input-bar"></div>
+  </div>
+  <div class="futuristic-input-space">
+    <div class="triangle-input-bar"></div>
+    <div class="triangle-input-down"></div>
+  </div>
+  <div class="futuristic-input-space2">
+    <div class="triangle-input-bar3"></div>
+    <div class="triangle-input-left2"></div>
+    <div class="futuristic-input-space-2"></div>
+    <div class="triangle-input-right"></div>
+    <div class="triangle-input-bar2"></div>
+    <div class="triangle-input-down"></div>
+    <div class="futuristic-input-space-2"></div>
+  </div>
+</div>
+
+<style>
+  /* From Uiverse.io by Novaxlo */
+  .futuristic-input {
+    width: 15em;
+    height: 6em;
+    position: relative;
+    overflow: hidden;
+    --firstcolor: #171033;
+    --secondcolor: #171033;
+    transition: all 0.25s ease-in-out;
+    padding: 0em;
+    margin: 0em;
+    animation: changeborder 2.5s infinite linear;
+  }
+
+  @keyframes changeborder {
+    0% {
+      border: 0.1em solid #515267;
+      border-left: 0.1em solid white;
+    }
+    25% {
+      border: 0.1em solid #515267;
+      border-top: 0.1em solid white;
+    }
+    50% {
+      border: 0.1em solid #515267;
+      border-right: 0.1em solid white;
+    }
+    70% {
+      border: 0.1em solid #515267;
+      border-bottom: 0.1em solid white;
+    }
+    100% {
+      border: 0.1em solid #515267;
+      border-left: 0.1em solid white;
+    }
+  }
+
+  .futuristic-input:hover {
+    transform: scale(1.1);
+    animation: spawn-light 1s;
+    animation-iteration-count: 1s;
+  }
+
+  @keyframes spawn-light {
+    0% {
+      background-color: white;
+      box-shadow: 0em 0em 5em white;
+    }
+    50% {
+      box-shadow: 0em 0em 0em white;
+    }
+    100% {
+      background-color: rgb(255, 255, 255, 0);
+    }
+  }
+  .input {
+    width: 80%;
+    height: 1.75em;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-left: none;
+    border-top: none;
+    border-right: none;
+    border-bottom: 0.15em solid white;
+    background-color: var(--firstcolor);
+    font-weight: bold;
+    padding-left: 0.25em;
+    color: white;
+    outline: none;
+    font-weight: 100;
+  }
+  .triangle-input-up {
+    width: 0em;
+    height: 0em;
+    border-left: 1em solid transparent;
+    border-bottom: 1em solid var(--secondcolor);
+  }
+  .triangle-input-left {
+    width: 0em;
+    height: 0em;
+    border-right: 1em solid transparent;
+    border-bottom: 1em solid var(--firstcolor);
+  }
+  .triangle-input-left2 {
+    width: 0em;
+    height: 0em;
+    border-right: 1em solid transparent;
+    border-bottom: 1em solid white;
+  }
+  .triangle-input-down {
+    width: 0em;
+    height: 0em;
+    border-bottom: 1em solid transparent;
+    border-left: 1em solid var(--firstcolor);
+  }
+  .triangle-input-right {
+    width: 0em;
+    height: 0em;
+    border-left: 1em solid transparent;
+    border-top: 1em solid var(--secondcolor);
+  }
+  .triangle-input-right2 {
+    width: 0em;
+    height: 0em;
+    border-left: 1em solid transparent;
+    border-top: 1em solid white;
+  }
+  .futuristic-input-space {
+    width: 100%;
+    height: 1em;
+    display: flex;
+  }
+
+  .futuristic-input-space2 {
+    width: 100%;
+    height: 1em;
+    display: flex;
+    justify-content: flex-end;
+  }
+  .triangle-input-bar {
+    width: 100%;
+    height: 100%;
+    background-color: var(--firstcolor);
+  }
+  .triangle-input-bar2 {
+    width: 5em;
+    height: 100%;
+    background-color: var(--firstcolor);
+  }
+  .triangle-input-bar3 {
+    width: 3em;
+    height: 100%;
+    background-color: white;
+  }
+  .futuristic-input-space-2 {
+    width: 2em;
+    height: 1em;
+    display: flex;
+  }
+
+  .futuristic-input-enter {
+    color: white;
+    top: -0.35em;
+    position: absolute;
+    left: 3.2em;
+    font-weight: bold;
+    animation: color-change 2.5s infinite linear;
+    -webkit-text-stroke: 0.01em white;
+    font-size: 1.25em;
+    text-shadow: 1em 0em 1em white;
+  }
+
+  .futuristic-input-name {
+    color: white;
+    bottom: -0.4em;
+    position: absolute;
+    right: 3.25em;
+    font-weight: bold;
+    animation: color-change 2.5s infinite linear 0.5s;
+    -webkit-text-stroke: 0.01em white;
+    font-size: 1.25em;
+    text-shadow: -2em 0em 1em white;
+  }
+
+  @keyframes color-change {
+    0% {
+      color: white;
+    }
+    25% {
+      color: white;
+    }
+    30% {
+      color: transparent;
+    }
+    35% {
+      color: white;
+    }
+    40% {
+      color: transparent;
+    }
+    45% {
+      color: white;
+    }
+    100% {
+      color: white;
+    }
+  }
+</style>
+<!-- From Uiverse.io by akshat-patel28 -->
+<div class="input-div">
+  <input class="input" name="file" type="file" />
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="1em"
+    height="1em"
+    stroke-linejoin="round"
+    stroke-linecap="round"
+    viewBox="0 0 24 24"
+    stroke-width="2"
+    fill="none"
+    stroke="currentColor"
+    class="icon"
+  >
+    <polyline points="16 16 12 12 8 16"></polyline>
+    <line y2="21" x2="12" y1="12" x1="12"></line>
+    <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"></path>
+    <polyline points="16 16 12 12 8 16"></polyline>
+  </svg>
+</div>
+<style>
+  /* From Uiverse.io by akshat-patel28 */
+  .input-div {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 2px solid rgb(1, 235, 252);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    box-shadow: 0px 0px 100px rgb(1, 235, 252),
+      inset 0px 0px 10px rgb(1, 235, 252), 0px 0px 5px rgb(255, 255, 255);
+    animation: flicker 2s linear infinite;
+  }
+
+  .icon {
+    color: rgb(1, 235, 252);
+    font-size: 2rem;
+    cursor: pointer;
+    animation: iconflicker 2s linear infinite;
+  }
+
+  .input {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer !important;
+  }
+
+  @keyframes flicker {
+    0% {
+      border: 2px solid rgb(1, 235, 252);
+      box-shadow: 0px 0px 100px rgb(1, 235, 252),
+        inset 0px 0px 10px rgb(1, 235, 252), 0px 0px 5px rgb(255, 255, 255);
+    }
+
+    5% {
+      border: none;
+      box-shadow: none;
+    }
+
+    10% {
+      border: 2px solid rgb(1, 235, 252);
+      box-shadow: 0px 0px 100px rgb(1, 235, 252),
+        inset 0px 0px 10px rgb(1, 235, 252), 0px 0px 5px rgb(255, 255, 255);
+    }
+
+    25% {
+      border: none;
+      box-shadow: none;
+    }
+
+    30% {
+      border: 2px solid rgb(1, 235, 252);
+      box-shadow: 0px 0px 100px rgb(1, 235, 252),
+        inset 0px 0px 10px rgb(1, 235, 252), 0px 0px 5px rgb(255, 255, 255);
+    }
+
+    100% {
+      border: 2px solid rgb(1, 235, 252);
+      box-shadow: 0px 0px 100px rgb(1, 235, 252),
+        inset 0px 0px 10px rgb(1, 235, 252), 0px 0px 5px rgb(255, 255, 255);
+    }
+  }
+
+  @keyframes iconflicker {
+    0% {
+      opacity: 1;
+    }
+
+    5% {
+      opacity: 0.2;
+    }
+
+    10% {
+      opacity: 1;
+    }
+
+    25% {
+      opacity: 0.2;
+    }
+
+    30% {
+      opacity: 1;
+    }
+
+    100% {
+      opacity: 1;
+    }
+  }
+</style>
+
+<!-- From Uiverse.io by OmarN6 -->
+<form action="" class="container">
+  <div class="input-container">
+    <div class="input-content">
+      <div class="input-dist">
+        <span id="SubscribeTXT">Subscription</span>
+        <div class="input-type">
+          <input placeholder="Email" required="" type="text" class="input-is" />
+          <input
+            placeholder="Password"
+            required=""
+            type="password"
+            class="input-is"
+          />
+        </div>
+        <button>Subscribe</button>
+      </div>
+    </div>
+  </div>
+</form>
+<style>
+  /* From Uiverse.io by OmarN6 */
+  /*The eye icon on the password can be stylize with any tool you want
+to use (the only way i know to do this correctly is using JS)
+this is meant to be wide supported and it really depends on you browsers
+if i realize any way to stylize the eye it could be added in the future
+in other input type*/
+  #SubscribeTXT {
+    font-size: 20px;
+    color: #9fc4d0;
+  }
+
+  button {
+    color: #9fc4d0;
+    text-decoration: none;
+    font-size: 25px;
+    border: none;
+    background: none;
+    font-weight: 600;
+    font-family: "Poppins", sans-serif;
+    margin: 10px 0 0;
+  }
+
+  button::before {
+    margin-left: auto;
+  }
+
+  button::after,
+  button::before {
+    content: "";
+    width: 0%;
+    height: 2px;
+    background: #06aed8;
+    display: block;
+    transition: 0.5s;
+  }
+
+  button:hover::after,
+  button:hover::before {
+    width: 100%;
+  }
+
+  .container {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    font-style: italic;
+    font-weight: bold;
+    display: flex;
+    margin: auto;
+    aspect-ratio: 16/9;
+    align-items: center;
+    justify-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 1em;
+  }
+
+  .input-container {
+    filter: drop-shadow(46px 36px 24px #4090b5)
+      drop-shadow(-55px -40px 25px #9e30a9);
+    animation: blinkShadowsFilter 8s ease-in infinite;
+  }
+
+  .input-content {
+    display: grid;
+    align-content: center;
+    justify-items: center;
+    align-items: center;
+    text-align: center;
+    padding-inline: 1em;
+  }
+
+  .input-content::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    filter: blur(40px);
+    -webkit-clip-path: polygon(
+      26% 0,
+      66% 0,
+      92% 0,
+      100% 8%,
+      100% 89%,
+      91% 100%,
+      7% 100%,
+      0 92%,
+      0 0
+    );
+    clip-path: polygon(
+      26% 0,
+      66% 0,
+      92% 0,
+      100% 8%,
+      100% 89%,
+      91% 100%,
+      7% 100%,
+      0 92%,
+      0 0
+    );
+    background: rgba(122, 251, 255, 0.5568627451);
+    transition: all 1s ease-in-out;
+  }
+
+  .input-content::after {
+    content: "";
+    position: absolute;
+    width: 98%;
+    height: 98%;
+    box-shadow: inset 0px 0px 20px 20px #212121;
+    background: repeating-linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(64, 144, 181, 0.6) 1px,
+        rgb(0, 0, 0) 3px,
+        hsl(295, 60%, 12%) 5px,
+        #153544 4px,
+        transparent 0.5%
+      ),
+      repeating-linear-gradient(
+        to left,
+        hsl(295, 60%, 12%) 100%,
+        hsla(295, 60%, 12%, 0.99) 100%
+      );
+    -webkit-clip-path: polygon(
+      26% 0,
+      31% 5%,
+      61% 5%,
+      66% 0,
+      92% 0,
+      100% 8%,
+      100% 89%,
+      91% 100%,
+      7% 100%,
+      0 92%,
+      0 0
+    );
+    clip-path: polygon(
+      26% 0,
+      31% 5%,
+      61% 5%,
+      66% 0,
+      92% 0,
+      100% 8%,
+      100% 89%,
+      91% 100%,
+      7% 100%,
+      0 92%,
+      0 0
+    );
+    animation: backglitch 50ms linear infinite;
+  }
+
+  .input-dist {
+    z-index: 80;
+    display: grid;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    padding-inline: 1em;
+    padding-block: 1.2em;
+    grid-template-columns: 1fr;
+  }
+
+  .input-type {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 1em;
+    font-size: 1.1rem;
+    background-color: transparent;
+    width: 100%;
+    border: none;
+  }
+
+  .input-is {
+    color: #fff;
+    font-size: 0.9rem;
+    background-color: transparent;
+    width: 100%;
+    box-sizing: border-box;
+    padding-inline: 0.5em;
+    padding-block: 0.7em;
+    border: none;
+    transition: all 1s ease-in-out;
+    border-bottom: 1px solid hsl(221, 26%, 43%);
+  }
+
+  .input-is:hover {
+    transition: all 1s ease-in-out;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(102, 224, 255, 0.2) 27%,
+      rgba(102, 224, 255, 0.2) 63%,
+      transparent 100%
+    );
+  }
+
+  .input-content:focus-within::before {
+    transition: all 1s ease-in-out;
+    background: hsla(0, 0%, 100%, 0.814);
+  }
+
+  .input-is:focus {
+    outline: none;
+    border-bottom: 1px solid hsl(192, 100%, 100%);
+    color: hsl(192, 100%, 88%);
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(102, 224, 255, 0.2) 27%,
+      rgba(102, 224, 255, 0.2) 63%,
+      transparent 100%
+    );
+  }
+
+  .input-is::-moz-placeholder {
+    color: hsla(192, 100%, 88%, 0.806);
+  }
+
+  .input-is::placeholder {
+    color: hsla(192, 100%, 88%, 0.806);
+  }
+
+  @keyframes backglitch {
+    0% {
+      box-shadow: inset 0px 20px 20px 30px #212121;
+    }
+
+    50% {
+      box-shadow: inset 0px -20px 20px 30px hsl(297, 42%, 10%);
+    }
+
+    to {
+      box-shadow: inset 0px 20px 20px 30px #212121;
+    }
+  }
+
+  @keyframes rotate {
+    0% {
+      transform: rotate(0deg) translate(-50%, 20%);
+    }
+
+    50% {
+      transform: rotate(180deg) translate(40%, 10%);
+    }
+
+    to {
+      transform: rotate(360deg) translate(-50%, 20%);
+    }
+  }
+
+  @keyframes blinkShadowsFilter {
+    0% {
+      filter: drop-shadow(46px 36px 28px rgba(64, 144, 181, 0.3411764706))
+        drop-shadow(-55px -40px 28px #9e30a9);
+    }
+
+    25% {
+      filter: drop-shadow(46px -36px 24px rgba(64, 144, 181, 0.8980392157))
+        drop-shadow(-55px 40px 24px #9e30a9);
+    }
+
+    50% {
+      filter: drop-shadow(46px 36px 30px rgba(64, 144, 181, 0.8980392157))
+        drop-shadow(-55px 40px 30px rgba(159, 48, 169, 0.2941176471));
+    }
+
+    75% {
+      filter: drop-shadow(20px -18px 25px rgba(64, 144, 181, 0.8980392157))
+        drop-shadow(-20px 20px 25px rgba(159, 48, 169, 0.2941176471));
+    }
+
+    to {
+      filter: drop-shadow(46px 36px 28px rgba(64, 144, 181, 0.3411764706))
+        drop-shadow(-55px -40px 28px #9e30a9);
+    }
+  }
+</style>
+<!-- From Uiverse.io by vaibhavchandranv -->
+<div class="ai-hud-component">
+  <div class="ai-hud-frame">
+    <div class="ai-hud-input-wrapper">
+      <input
+        type="text"
+        class="ai-hud-input"
+        placeholder="Ask Techno anything..."
+      />
+      <span class="ai-hud-caret"></span>
+      <button class="ai-hud-btn">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="ai-hud-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M22 2L11 13"></path>
+          <path d="M22 2L15 22L11 13L2 9L22 2Z"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+  <div class="ai-hud-grid"></div>
+</div>
+<style>
+  /* From Uiverse.io by vaibhavchandranv */
+  /* HUD Component + Grid + Frame remain unchanged */
+
+  .ai-hud-component {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100%;
+    min-width: 100%;
+    background: #050a1a;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ai-hud-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 255, 255, 0.05) 0px,
+        rgba(0, 255, 255, 0.05) 1px,
+        transparent 1px,
+        transparent 20px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        rgba(0, 255, 255, 0.05) 0px,
+        rgba(0, 255, 255, 0.05) 1px,
+        transparent 1px,
+        transparent 20px
+      );
+    animation: grid-move 2s linear infinite;
+    z-index: 0;
+  }
+
+  .ai-hud-frame {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    position: relative;
+    padding: 1.5rem;
+    width: 24em;
+    background: rgba(0, 255, 255, 0.05);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    z-index: 2;
+    animation: frame-pulse 5s infinite ease-in-out;
+  }
+
+  .ai-hud-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    z-index: 3;
+  }
+
+  .ai-hud-input {
+    flex: 1;
+    background: transparent;
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    outline: none;
+    color: #00ffff;
+    font-family: "Orbitron", sans-serif;
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+    padding: 0.5rem 0.75rem;
+    caret-color: #00ffff;
+    transition: border 0.3s, box-shadow 0.3s;
+  }
+
+  .ai-hud-input:hover {
+    border: 1px solid rgba(0, 255, 255, 0.5);
+    box-shadow: 0 0 12px rgba(0, 255, 255, 0.3);
+  }
+
+  .ai-hud-input::placeholder {
+    color: rgba(0, 255, 255, 0.4);
+  }
+
+  .ai-hud-btn {
+    background: rgba(0, 255, 255, 0.05);
+    border: 1px solid rgba(0, 255, 255, 0.4);
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    margin-left: 0.75rem;
+    transition: all 0.4s ease;
+    clip-path: polygon(0 0, 100% 0, 85% 100%, 0% 100%);
+    box-shadow: 0 0 8px rgba(0, 255, 255, 0.3);
+    transform: rotate(-1deg);
+  }
+
+  .ai-hud-btn:hover {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.8), 0 0 40px rgba(0, 255, 255, 0.5);
+    background: rgba(0, 255, 255, 0.08);
+    transform: rotate(-1deg) scale(1.1);
+  }
+
+  .ai-hud-btn:active {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.8), 0 0 40px rgba(0, 255, 255, 0.5);
+    background: rgba(0, 255, 255, 0.08);
+    transform: rotate(-2deg) scale(1);
+  }
+
+  .ai-hud-icon {
+    width: 1rem;
+    height: 1rem;
+    stroke: #00ffff;
+  }
+
+  /* Keep grid-move + frame-pulse since they’re still used */
+  @keyframes grid-move {
+    0% {
+      background-position: 0 0, 0 0;
+    }
+    100% {
+      background-position: 40px 40px, 40px 40px;
+    }
+  }
+
+  @keyframes frame-pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.95;
+    }
+  }
+</style>
+<!-- From Uiverse.io by InfinityLoopGames -->
+<form class="container" action="">
+  <div class="input-container">
+    <div class="input-content">
+      <div class="input-dist">
+        <div class="input-type">
+          <input class="input-is" type="text" required="" placeholder="User" />
+          <input
+            class="input-is"
+            type="password"
+            required=""
+            placeholder="Password"
+          />
+          <button class="submit">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+<style>
+  /* From Uiverse.io by InfinityLoopGames */
+  /*The eye icon on the password can be stylize with any tool you want
+to use (the only way i know to do this correctly is using JS)
+this is meant to be wide supported and it really depends on you browsers
+if i realize any way to stylize the eye it could be added in the future
+in other input type*/
+
+  .submit {
+    color: #9fc4d0;
+    text-decoration: none;
+    font-size: 25px;
+    border: none;
+    background: none;
+    font-weight: 600;
+    font-family: "Poppins", sans-serif;
+    margin: 10px 0 0;
+  }
+
+  .submit::before {
+    margin-left: auto;
+  }
+
+  .submit::after,
+  .submit::before {
+    content: "";
+    width: 0%;
+    height: 2px;
+    background: #06aed8;
+    display: block;
+    transition: 0.5s;
+  }
+
+  .submit:hover::after,
+  .submit:hover::before {
+    width: 100%;
+  }
+
+  .container {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    font-style: italic;
+    font-weight: bold;
+    display: flex;
+    margin: auto;
+    aspect-ratio: 16/9;
+    align-items: center;
+    justify-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 1em;
+  }
+
+  .input-container {
+    filter: drop-shadow(46px 36px 24px #4090b5)
+      drop-shadow(-55px -40px 25px #9e30a9);
+    animation: blinkShadowsFilter 8s ease-in infinite;
+  }
+
+  .input-content {
+    display: grid;
+    align-content: center;
+    justify-items: center;
+    align-items: center;
+    text-align: center;
+    padding-inline: 1em;
+  }
+
+  .input-content::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    filter: blur(40px);
+    -webkit-clip-path: polygon(
+      26% 0,
+      66% 0,
+      92% 0,
+      100% 8%,
+      100% 89%,
+      91% 100%,
+      7% 100%,
+      0 92%,
+      0 0
+    );
+    clip-path: polygon(
+      26% 0,
+      66% 0,
+      92% 0,
+      100% 8%,
+      100% 89%,
+      91% 100%,
+      7% 100%,
+      0 92%,
+      0 0
+    );
+    background: rgba(122, 251, 255, 0.5568627451);
+    transition: all 1s ease-in-out;
+  }
+
+  .input-content::after {
+    content: "";
+    position: absolute;
+    width: 98%;
+    height: 98%;
+    box-shadow: inset 0px 0px 20px 20px #212121;
+    background: repeating-linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(64, 144, 181, 0.6) 1px,
+        rgb(0, 0, 0) 3px,
+        hsl(295, 60%, 12%) 5px,
+        #153544 4px,
+        transparent 0.5%
+      ),
+      repeating-linear-gradient(
+        to left,
+        hsl(295, 60%, 12%) 100%,
+        hsla(295, 60%, 12%, 0.99) 100%
+      );
+    -webkit-clip-path: polygon(
+      26% 0,
+      31% 5%,
+      61% 5%,
+      66% 0,
+      92% 0,
+      100% 8%,
+      100% 89%,
+      91% 100%,
+      7% 100%,
+      0 92%,
+      0 0
+    );
+    clip-path: polygon(
+      26% 0,
+      31% 5%,
+      61% 5%,
+      66% 0,
+      92% 0,
+      100% 8%,
+      100% 89%,
+      91% 100%,
+      7% 100%,
+      0 92%,
+      0 0
+    );
+    animation: backglitch 50ms linear infinite;
+  }
+
+  .input-dist {
+    z-index: 80;
+    display: grid;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    padding-inline: 1em;
+    padding-block: 1.2em;
+    grid-template-columns: 1fr;
+  }
+
+  .input-type {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 1em;
+    font-size: 1.1rem;
+    background-color: transparent;
+    width: 100%;
+    border: none;
+  }
+
+  .input-is {
+    color: #fff;
+    font-size: 0.9rem;
+    background-color: transparent;
+    width: 100%;
+    box-sizing: border-box;
+    padding-inline: 0.5em;
+    padding-block: 0.7em;
+    border: none;
+    transition: all 1s ease-in-out;
+    border-bottom: 1px solid hsl(221, 26%, 43%);
+  }
+
+  .input-is:hover {
+    transition: all 1s ease-in-out;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(102, 224, 255, 0.2) 27%,
+      rgba(102, 224, 255, 0.2) 63%,
+      transparent 100%
+    );
+  }
+
+  .input-content:focus-within::before {
+    transition: all 1s ease-in-out;
+    background: hsla(0, 0%, 100%, 0.814);
+  }
+
+  .input-is:focus {
+    outline: none;
+    border-bottom: 1px solid hsl(192, 100%, 100%);
+    color: hsl(192, 100%, 88%);
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(102, 224, 255, 0.2) 27%,
+      rgba(102, 224, 255, 0.2) 63%,
+      transparent 100%
+    );
+  }
+
+  .input-is::-moz-placeholder {
+    color: hsla(192, 100%, 88%, 0.806);
+  }
+
+  .input-is::placeholder {
+    color: hsla(192, 100%, 88%, 0.806);
+  }
+
+  @keyframes backglitch {
+    0% {
+      box-shadow: inset 0px 20px 20px 30px #212121;
+    }
+
+    50% {
+      box-shadow: inset 0px -20px 20px 30px hsl(297, 42%, 10%);
+    }
+
+    to {
+      box-shadow: inset 0px 20px 20px 30px #212121;
+    }
+  }
+
+  @keyframes rotate {
+    0% {
+      transform: rotate(0deg) translate(-50%, 20%);
+    }
+
+    50% {
+      transform: rotate(180deg) translate(40%, 10%);
+    }
+
+    to {
+      transform: rotate(360deg) translate(-50%, 20%);
+    }
+  }
+
+  @keyframes blinkShadowsFilter {
+    0% {
+      filter: drop-shadow(46px 36px 28px rgba(64, 144, 181, 0.3411764706))
+        drop-shadow(-55px -40px 28px #9e30a9);
+    }
+
+    25% {
+      filter: drop-shadow(46px -36px 24px rgba(64, 144, 181, 0.8980392157))
+        drop-shadow(-55px 40px 24px #9e30a9);
+    }
+
+    50% {
+      filter: drop-shadow(46px 36px 30px rgba(64, 144, 181, 0.8980392157))
+        drop-shadow(-55px 40px 30px rgba(159, 48, 169, 0.2941176471));
+    }
+
+    75% {
+      filter: drop-shadow(20px -18px 25px rgba(64, 144, 181, 0.8980392157))
+        drop-shadow(-20px 20px 25px rgba(159, 48, 169, 0.2941176471));
+    }
+
+    to {
+      filter: drop-shadow(46px 36px 28px rgba(64, 144, 181, 0.3411764706))
+        drop-shadow(-55px -40px 28px #9e30a9);
+    }
+  }
+</style>
+<!-- From Uiverse.io by 3bdel3ziz-T -->
+<div class="container">
+  <div class="folder">
+    <div class="front-side">
+      <div class="tip"></div>
+      <div class="cover"></div>
+    </div>
+    <div class="back-side cover"></div>
+  </div>
+  <label class="custom-file-upload">
+    <input class="title" type="file" />
+    Choose a file
+  </label>
+</div>
+<style>
+  /* From Uiverse.io by 3bdel3ziz-T */
+  .container {
+    --transition: 350ms;
+    --folder-W: 120px;
+    --folder-H: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 10px;
+    background: linear-gradient(135deg, #6dd5ed, #2193b0);
+    border-radius: 15px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    height: calc(var(--folder-H) * 1.7);
+    position: relative;
+  }
+
+  .folder {
+    position: absolute;
+    top: -20px;
+    left: calc(50% - 60px);
+    animation: float 2.5s infinite ease-in-out;
+    transition: transform var(--transition) ease;
+  }
+
+  .folder:hover {
+    transform: scale(1.05);
+  }
+
+  .folder .front-side,
+  .folder .back-side {
+    position: absolute;
+    transition: transform var(--transition);
+    transform-origin: bottom center;
+  }
+
+  .folder .back-side::before,
+  .folder .back-side::after {
+    content: "";
+    display: block;
+    background-color: white;
+    opacity: 0.5;
+    z-index: 0;
+    width: var(--folder-W);
+    height: var(--folder-H);
+    position: absolute;
+    transform-origin: bottom center;
+    border-radius: 15px;
+    transition: transform 350ms;
+    z-index: 0;
+  }
+
+  .container:hover .back-side::before {
+    transform: rotateX(-5deg) skewX(5deg);
+  }
+  .container:hover .back-side::after {
+    transform: rotateX(-15deg) skewX(12deg);
+  }
+
+  .folder .front-side {
+    z-index: 1;
+  }
+
+  .container:hover .front-side {
+    transform: rotateX(-40deg) skewX(15deg);
+  }
+
+  .folder .tip {
+    background: linear-gradient(135deg, #ff9a56, #ff6f56);
+    width: 80px;
+    height: 20px;
+    border-radius: 12px 12px 0 0;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    position: absolute;
+    top: -10px;
+    z-index: 2;
+  }
+
+  .folder .cover {
+    background: linear-gradient(135deg, #ffe563, #ffc663);
+    width: var(--folder-W);
+    height: var(--folder-H);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+  }
+
+  .custom-file-upload {
+    font-size: 1.1em;
+    color: #ffffff;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: background var(--transition) ease;
+    display: inline-block;
+    width: 100%;
+    padding: 10px 35px;
+    position: relative;
+  }
+
+  .custom-file-upload:hover {
+    background: rgba(255, 255, 255, 0.4);
+  }
+
+  .custom-file-upload input[type="file"] {
+    display: none;
+  }
+
+  @keyframes float {
+    0% {
+      transform: translateY(0px);
+    }
+
+    50% {
+      transform: translateY(-20px);
+    }
+
+    100% {
+      transform: translateY(0px);
+    }
+  }
+</style>
+<!-- From Uiverse.io by MijailVillegas -->
+<form class="container" action="">
+  <div class="input-container">
+    <div class="input-content">
+      <div class="input-dist">
+        <div class="input-type">
+          <input class="input-is" type="text" required="" placeholder="User" />
+          <input
+            class="input-is"
+            type="password"
+            required=""
+            placeholder="Password"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+  <button class="submit-button">Log in</button>
+</form>
+<style>
+  /* From Uiverse.io by MijailVillegas */
+  /*The eye icon on the password can be stylize with any tool you want
+to use (the only way i know to do this correctly is using JS)
+this is meant to be wide supported and it really depends on you browsers
+if i realize any way to stylize the eye it could be added in the future
+in other input type*/
+
+  .container {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    font-style: italic;
+    font-weight: bold;
+    display: flex;
+    margin: auto;
+    aspect-ratio: 16/9;
+    align-items: center;
+    justify-items: center;
+    justify-content: center;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    gap: 1em;
+  }
+
+  .input-container {
+    filter: drop-shadow(46px 36px 24px #4090b5)
+      drop-shadow(-55px -40px 25px #9e30a9);
+    animation: blinkShadowsFilter 8s ease-in infinite;
+  }
+
+  .input-content {
+    display: grid;
+    align-content: center;
+    justify-items: center;
+    align-items: center;
+    text-align: center;
+    padding-inline: 1em;
+  }
+
+  .input-content::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    filter: blur(40px);
+    -webkit-clip-path: polygon(
+      26% 0,
+      66% 0,
+      92% 0,
+      100% 8%,
+      100% 89%,
+      91% 100%,
+      7% 100%,
+      0 92%,
+      0 0
+    );
+    clip-path: polygon(
+      26% 0,
+      66% 0,
+      92% 0,
+      100% 8%,
+      100% 89%,
+      91% 100%,
+      7% 100%,
+      0 92%,
+      0 0
+    );
+    background: rgba(122, 251, 255, 0.5568627451);
+    transition: all 1s ease-in-out;
+  }
+
+  .input-content::after {
+    content: "";
+    position: absolute;
+    width: 98%;
+    height: 98%;
+    box-shadow: inset 0px 0px 20px 20px #212121;
+    background: repeating-linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(64, 144, 181, 0.6) 1px,
+        rgb(0, 0, 0) 3px,
+        hsl(295, 60%, 12%) 5px,
+        #153544 4px,
+        transparent 0.5%
+      ),
+      repeating-linear-gradient(
+        to left,
+        hsl(295, 60%, 12%) 100%,
+        hsla(295, 60%, 12%, 0.99) 100%
+      );
+    -webkit-clip-path: polygon(
+      26% 0,
+      31% 5%,
+      61% 5%,
+      66% 0,
+      92% 0,
+      100% 8%,
+      100% 89%,
+      91% 100%,
+      7% 100%,
+      0 92%,
+      0 0
+    );
+    clip-path: polygon(
+      26% 0,
+      31% 5%,
+      61% 5%,
+      66% 0,
+      92% 0,
+      100% 8%,
+      100% 89%,
+      91% 100%,
+      7% 100%,
+      0 92%,
+      0 0
+    );
+    animation: backglitch 50ms linear infinite;
+  }
+
+  .input-dist {
+    z-index: 80;
+    display: grid;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    padding-inline: 1em;
+    padding-block: 1.2em;
+    grid-template-columns: 1fr;
+  }
+
+  .input-type {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 1em;
+    font-size: 1.1rem;
+    background-color: transparent;
+    width: 100%;
+    border: none;
+  }
+
+  .input-is {
+    color: #fff;
+    font-size: 0.9rem;
+    background-color: transparent;
+    width: 100%;
+    box-sizing: border-box;
+    padding-inline: 0.5em;
+    padding-block: 0.7em;
+    border: none;
+    transition: all 1s ease-in-out;
+    border-bottom: 1px solid hsl(221, 26%, 43%);
+  }
+
+  .input-is:hover {
+    transition: all 1s ease-in-out;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(102, 224, 255, 0.2) 27%,
+      rgba(102, 224, 255, 0.2) 63%,
+      transparent 100%
+    );
+  }
+
+  .input-content:focus-within::before {
+    transition: all 1s ease-in-out;
+    background: hsla(0, 0%, 100%, 0.814);
+  }
+
+  .input-is:focus {
+    outline: none;
+    border-bottom: 1px solid hsl(192, 100%, 100%);
+    color: hsl(192, 100%, 88%);
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(102, 224, 255, 0.2) 27%,
+      rgba(102, 224, 255, 0.2) 63%,
+      transparent 100%
+    );
+  }
+
+  .input-is::-moz-placeholder {
+    color: hsla(192, 100%, 88%, 0.806);
+  }
+
+  .input-is::placeholder {
+    color: hsla(192, 100%, 88%, 0.806);
+  }
+
+  .submit-button {
+    width: 50%;
+    border: none;
+    color: hsla(192, 100%, 88%, 0.806);
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(102, 224, 255, 0.2) 27%,
+      rgba(102, 224, 255, 0.2) 63%,
+      transparent 100%
+    );
+    clip-path: polygon(
+      0 0,
+      85% 0%,
+      100% 0,
+      100% 15%,
+      100% 90%,
+      91% 100%,
+      0 100%
+    );
+    padding: 0.5em;
+    animation: blinkShadowsFilter 0.5s ease-in infinite;
+    transition: all 500ms;
+  }
+
+  .submit-button:hover {
+    color: hsl(0, 0%, 100%);
+    cursor: pointer;
+    font-size: medium;
+    font-weight: bold;
+  }
+
+  @keyframes backglitch {
+    0% {
+      box-shadow: inset 0px 20px 20px 30px #212121;
+    }
+
+    50% {
+      box-shadow: inset 0px -20px 20px 30px hsl(297, 42%, 10%);
+    }
+
+    to {
+      box-shadow: inset 0px 20px 20px 30px #212121;
+    }
+  }
+
+  @keyframes rotate {
+    0% {
+      transform: rotate(0deg) translate(-50%, 20%);
+    }
+
+    50% {
+      transform: rotate(180deg) translate(40%, 10%);
+    }
+
+    to {
+      transform: rotate(360deg) translate(-50%, 20%);
+    }
+  }
+
+  @keyframes blinkShadowsFilter {
+    0% {
+      filter: drop-shadow(46px 36px 28px rgba(64, 144, 181, 0.3411764706))
+        drop-shadow(-55px -40px 28px #9e30a9);
+    }
+
+    25% {
+      filter: drop-shadow(46px -36px 24px rgba(64, 144, 181, 0.8980392157))
+        drop-shadow(-55px 40px 24px #9e30a9);
+    }
+
+    50% {
+      filter: drop-shadow(46px 36px 30px rgba(64, 144, 181, 0.8980392157))
+        drop-shadow(-55px 40px 30px rgba(159, 48, 169, 0.2941176471));
+    }
+
+    75% {
+      filter: drop-shadow(20px -18px 25px rgba(64, 144, 181, 0.8980392157))
+        drop-shadow(-20px 20px 25px rgba(159, 48, 169, 0.2941176471));
+    }
+
+    to {
+      filter: drop-shadow(46px 36px 28px rgba(64, 144, 181, 0.3411764706))
+        drop-shadow(-55px -40px 28px #9e30a9);
+    }
+  }
+</style>
+<!-- From Uiverse.io by escannord -->
+<label for="file" class="labelFile"
+  ><span
+    ><svg
+      xml:space="preserve"
+      viewBox="0 0 184.69 184.69"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      xmlns="http://www.w3.org/2000/svg"
+      id="Capa_1"
+      version="1.1"
+      width="60px"
+      height="60px"
+    >
+      <g>
+        <g>
+          <g>
+            <path
+              d="M149.968,50.186c-8.017-14.308-23.796-22.515-40.717-19.813
+				C102.609,16.43,88.713,7.576,73.087,7.576c-22.117,0-40.112,17.994-40.112,40.115c0,0.913,0.036,1.854,0.118,2.834
+				C14.004,54.875,0,72.11,0,91.959c0,23.456,19.082,42.535,42.538,42.535h33.623v-7.025H42.538
+				c-19.583,0-35.509-15.929-35.509-35.509c0-17.526,13.084-32.621,30.442-35.105c0.931-0.132,1.768-0.633,2.326-1.392
+				c0.555-0.755,0.795-1.704,0.644-2.63c-0.297-1.904-0.447-3.582-0.447-5.139c0-18.249,14.852-33.094,33.094-33.094
+				c13.703,0,25.789,8.26,30.803,21.04c0.63,1.621,2.351,2.534,4.058,2.14c15.425-3.568,29.919,3.883,36.604,17.168
+				c0.508,1.027,1.503,1.736,2.641,1.897c17.368,2.473,30.481,17.569,30.481,35.112c0,19.58-15.937,35.509-35.52,35.509H97.391
+				v7.025h44.761c23.459,0,42.538-19.079,42.538-42.535C184.69,71.545,169.884,53.901,149.968,50.186z"
+              style="fill: #010002"
+            ></path>
+          </g>
+          <g>
+            <path
+              d="M108.586,90.201c1.406-1.403,1.406-3.672,0-5.075L88.541,65.078
+				c-0.701-0.698-1.614-1.045-2.534-1.045l-0.064,0.011c-0.018,0-0.036-0.011-0.054-0.011c-0.931,0-1.85,0.361-2.534,1.045
+				L63.31,85.127c-1.403,1.403-1.403,3.672,0,5.075c1.403,1.406,3.672,1.406,5.075,0L82.296,76.29v97.227
+				c0,1.99,1.603,3.597,3.593,3.597c1.979,0,3.59-1.607,3.59-3.597V76.165l14.033,14.036
+				C104.91,91.608,107.183,91.608,108.586,90.201z"
+              style="fill: #010002"
+            ></path>
+          </g>
+        </g>
+      </g></svg
+  ></span>
+  <p>drag and drop your file here or click to select a file!</p></label
+>
+<input class="input" name="text" id="file" type="file" />
+<style>
+  /* From Uiverse.io by escannord */
+  .input {
+    max-width: 190px;
+    display: none;
+  }
+
+  .labelFile {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 250px;
+    height: 190px;
+    border: 2px dashed #ccc;
+    align-items: center;
+    text-align: center;
+    padding: 5px;
+    color: #404040;
+    cursor: pointer;
+  }
+</style>
+<!-- From Uiverse.io by Darlley -->
+<div class="audio green-audio-player">
+  <div class="play-pause-btn">
+    <svg
+      viewBox="0 0 18 24"
+      height="24"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        id="playPause"
+        class="play-pause-icon"
+        d="M18 12L0 24V0"
+        fill-rule="evenodd"
+        fill="#566574"
+      ></path>
+    </svg>
+  </div>
+
+  <div class="controls">
+    <span class="current-time">0:00</span>
+    <div data-direction="horizontal" class="slider">
+      <div class="progress">
+        <div data-method="rewind" id="progress-pin" class="pin"></div>
+      </div>
+    </div>
+    <span class="total-time">0:00</span>
+  </div>
+
+  <div class="volume">
+    <div class="volume-btn">
+      <svg
+        viewBox="0 0 24 24"
+        height="24"
+        width="24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          id="speaker"
+          d="M14.667 0v2.747c3.853 1.146 6.666 4.72 6.666 8.946 0 4.227-2.813 7.787-6.666 8.934v2.76C20 22.173 24 17.4 24 11.693 24 5.987 20 1.213 14.667 0zM18 11.693c0-2.36-1.333-4.386-3.333-5.373v10.707c2-.947 3.333-2.987 3.333-5.334zm-18-4v8h5.333L12 22.36V1.027L5.333 7.693H0z"
+          fill-rule="evenodd"
+          fill="#566574"
+        ></path>
+      </svg>
+    </div>
+    <div class="volume-controls hidden">
+      <div data-direction="vertical" class="slider">
+        <div class="progress">
+          <div data-method="changeVolume" id="volume-pin" class="pin"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <audio crossorigin=""></audio>
+</div>
+<style>
+  /* From Uiverse.io by Darlley */
+  .audio.green-audio-player {
+    width: 400px;
+    min-width: 300px;
+    height: 56px;
+    box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.07);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 24px;
+    padding-right: 24px;
+    border-radius: 4px;
+    user-select: none;
+    -webkit-user-select: none;
+    background-color: #fff;
+  }
+
+  .audio.green-audio-player .play-pause-btn {
+    cursor: pointer;
+  }
+
+  .audio.green-audio-player .slider {
+    flex-grow: 1;
+    background-color: #d8d8d8;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .audio.green-audio-player .slider .progress {
+    background-color: #44bfa3;
+    border-radius: inherit;
+    position: absolute;
+    pointer-events: none;
+  }
+
+  .audio.green-audio-player .slider .progress .pin {
+    height: 16px;
+    width: 16px;
+    border-radius: 8px;
+    background-color: #44bfa3;
+    position: absolute;
+    pointer-events: all;
+    box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.32);
+  }
+
+  .audio.green-audio-player .controls {
+    font-family: "Roboto", sans-serif;
+    font-size: 16px;
+    line-height: 18px;
+    color: #55606e;
+    display: flex;
+    flex-grow: 1;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 24px;
+    margin-right: 24px;
+  }
+
+  .audio.green-audio-player .controls .slider {
+    margin-left: 16px;
+    margin-right: 16px;
+    border-radius: 2px;
+    height: 4px;
+  }
+
+  .audio.green-audio-player .controls .slider .progress {
+    width: 0;
+    height: 100%;
+  }
+
+  .audio.green-audio-player .controls .slider .pin {
+    right: -8px;
+    top: -6px;
+  }
+
+  .audio.green-audio-player .controls span {
+    cursor: default;
+  }
+
+  .audio.green-audio-player .volume {
+    position: relative;
+  }
+
+  .audio.green-audio-player .volume .volume-btn {
+    cursor: pointer;
+  }
+
+  .audio.green-audio-player .volume .volume-btn .open path {
+    fill: #44bfa3;
+  }
+
+  .audio.green-audio-player .volume .volume-controls {
+    width: 30px;
+    height: 135px;
+    background-color: rgba(0, 0, 0, 0.62);
+    border-radius: 7px;
+    position: absolute;
+    left: -3px;
+    bottom: 52px;
+    flex-direction: column;
+    align-items: center;
+    display: flex;
+  }
+
+  .audio.green-audio-player .volume .volume-controls.hidden {
+    display: none;
+  }
+
+  .audio.green-audio-player .volume .volume-controls .slider {
+    margin-top: 12px;
+    margin-bottom: 12px;
+    width: 6px;
+    border-radius: 3px;
+  }
+
+  .audio.green-audio-player .volume .volume-controls .slider .progress {
+    bottom: 0;
+    height: 100%;
+    width: 6px;
+  }
+
+  .audio.green-audio-player .volume .volume-controls .slider .progress .pin {
+    left: -5px;
+    top: -8px;
+  }
+</style>
+<!-- From Uiverse.io by javierBarroso -->
+<label class="slider">
+  <input type="range" class="level" />
+  <svg
+    class="volume"
+    xmlns="http://www.w3.org/2000/svg"
+    version="1.1"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    width="512"
+    height="512"
+    x="0"
+    y="0"
+    viewBox="0 0 24 24"
+    style="enable-background: new 0 0 512 512"
+    xml:space="preserve"
+  >
+    <g>
+      <path
+        d="M18.36 19.36a1 1 0 0 1-.705-1.71C19.167 16.148 20 14.142 20 12s-.833-4.148-2.345-5.65a1 1 0 1 1 1.41-1.419C20.958 6.812 22 9.322 22 12s-1.042 5.188-2.935 7.069a.997.997 0 0 1-.705.291z"
+        fill="currentColor"
+        data-original="#000000"
+      ></path>
+      <path
+        d="M15.53 16.53a.999.999 0 0 1-.703-1.711C15.572 14.082 16 13.054 16 12s-.428-2.082-1.173-2.819a1 1 0 1 1 1.406-1.422A6 6 0 0 1 18 12a6 6 0 0 1-1.767 4.241.996.996 0 0 1-.703.289zM12 22a1 1 0 0 1-.707-.293L6.586 17H4c-1.103 0-2-.897-2-2V9c0-1.103.897-2 2-2h2.586l4.707-4.707A.998.998 0 0 1 13 3v18a1 1 0 0 1-1 1z"
+        fill="currentColor"
+        data-original="#000000"
+      ></path>
+    </g>
+  </svg>
+</label>
+<style>
+  /* From Uiverse.io by javierBarroso */
+  /* level settings 👇 */
+
+  .slider {
+    /* slider */
+    --slider-width: 100%;
+    --slider-height: 15px;
+    --slider-bg: rgba(82, 82, 82, 0.322);
+    --slider-border-radius: 5px;
+    /* level */
+    --level-color: #92ff77;
+    --level-transition-duration: 5s;
+    /* icon */
+    --icon-margin: 15px;
+    --icon-color: var(--slider-bg);
+    --icon-size: 30px;
+  }
+
+  .slider {
+    position: relative;
+    cursor: pointer;
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: reverse;
+    -ms-flex-direction: row-reverse;
+    flex-direction: row-reverse;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+  }
+
+  .slider .volume {
+    display: inline-block;
+    vertical-align: top;
+    margin-right: var(--icon-margin);
+    color: var(--icon-color);
+    width: var(--icon-size);
+    height: auto;
+    position: absolute;
+    left: 18px;
+    pointer-events: none;
+    transition-duration: 0.5s;
+  }
+
+  .slider .level {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: var(--slider-width);
+    height: var(--slider-height);
+    background: var(--slider-bg);
+    overflow: hidden;
+    border-radius: var(--slider-border-radius);
+    -webkit-transition: height var(--level-transition-duration);
+    -o-transition: height var(--level-transition-duration);
+    transition: height var(--level-transition-duration);
+    cursor: inherit;
+    transform: rotate(270deg);
+  }
+
+  .slider .level::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 0px;
+    height: 0px;
+    -webkit-box-shadow: -200px 0 0 200px var(--level-color);
+    box-shadow: -100px 0 5px 100px var(--level-color),
+      -100px 0px 20px 100px var(--level-color);
+  }
+  .slider .level:hover ~ .volume {
+    color: var(--level-color);
+    opacity: 0.6;
+  }
+
+  .slider .level::-moz-range-thumb {
+    width: 0;
+    height: 0;
+    border-radius: 0;
+    border: none;
+    box-shadow: -100px 0 5px 100px var(--level-color),
+      -100px 0px 20px 100px var(--level-color);
+  }
+</style>

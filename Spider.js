@@ -21,6 +21,7 @@ export class SpiderManager {
     this.spiderGLTF = await gltfLoader.loadAsync(
       "./assets/models/voided_spider-opt.glb"
     );
+    this.spiderGLTF.scene.name = "spider";
     this.modelReady = true;
     GameState.modelReady = true;
   }
@@ -431,6 +432,7 @@ export class SpiderManager {
       new THREE.Vector3(-0.5, 0, -1), // left
       new THREE.Vector3(0.5, 0, -1), // right
     ];
+
   
     let avoidanceForce = new THREE.Vector3();
   
@@ -446,6 +448,7 @@ export class SpiderManager {
         // Push away from the obstacle
         const pushAway = worldDir.clone().negate().multiplyScalar(1 / hits[0].distance);
         avoidanceForce.add(pushAway);
+        console.log("ok")
       }
     });
   

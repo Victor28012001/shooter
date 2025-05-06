@@ -155,7 +155,7 @@ export function updateGunMuzzleFlash(position) {
 // Function to create a bullets
 export function createBullet(position, direction) {
   audio.play("./sounds/tommy-gun-single-bullet.mp3", 1);
-  audio.fadeOutMusic(3);
+  // audio.fadeOutMusic(3);
   const bullet = new Bullet(position, direction);
   GameState.bullets.push(bullet);
 }

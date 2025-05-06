@@ -84,7 +84,7 @@ export class Bullet {
     if (buildingHits.length > 0) {
       if (GameState.bulletCount % 15 === 0) {
         this.audio.play("./sounds/bullet-ricochet.mp3", 1);
-        this.audio.fadeOutMusic(3);
+        // this.audio.fadeOutMusic(3);
       }
       GameState.bulletCount++;
 

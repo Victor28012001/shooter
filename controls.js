@@ -16,7 +16,7 @@ export var onKeyDown = function (event) {
       playAnimation("Arms_Fire");
       if (currentBullets > 0) {
         audio.play("./sounds/tommy-gun-single-bullet.mp3", 1);
-        audio.fadeOutMusic(3);
+        // audio.fadeOutMusic(3);
       }
       break;
     case 82: // R key
@@ -92,6 +92,7 @@ export var pauseGame = function (event) {
       GameState.controls.lock();
       animate();
       hidePauseMenu();
+      audio.resumeMusic('./sounds/level ambience/1-01 Encounter.mp3')
     }
   }
 };

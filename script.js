@@ -86,6 +86,7 @@ loader.load(
   "./assets/models/low_poly_abandoned_brick_room-opt.glb",
   function (gltf) {
     GameState.abandonedBuilding = gltf.scene;
+    GameState.abandonedBuilding.name = "room";
     GameState.abandonedBuilding.position.y = 0.01;
 
     // Traverse and update material side for all meshes
