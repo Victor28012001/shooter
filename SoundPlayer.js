@@ -1,4 +1,5 @@
 import { pauseGame } from "./controls.js";
+import { hidePauseMenu } from "./ui.js";
 export class SoundPlayer {
     constructor() {
       this.audioContext = null;
@@ -180,88 +181,125 @@ export class SoundPlayer {
   
     // UI injected dynamically
     initUI() {
-        // Create main wrapper
-        const wrapper = document.createElement("div");
-        wrapper.id = "audio-controls";
-        wrapper.style.position = "fixed";
-        wrapper.style.top = "0";
-        wrapper.style.left = "0";
-        wrapper.style.width = "100vw";
-        wrapper.style.height = "100vh";
-        wrapper.style.background = "rgba(0,0,0,0.6)";
-        wrapper.style.color = "white";
-        wrapper.style.fontFamily = "sans-serif";
-        wrapper.style.zIndex = "999";
-        wrapper.style.display = "flex";
-        wrapper.style.justifyContent = "center";
-        wrapper.style.alignItems = "center";
-        wrapper.style.visibility = "hidden"; // Initially hidden
-      
-        // Gear icon toggle button
-        const gearBtn = document.createElement("button");
-        gearBtn.id = "gearBtn";
-        gearBtn.innerHTML = "⚙️";
-        gearBtn.style.position = "fixed";
-        gearBtn.style.top = "10px";
-        gearBtn.style.left = "10px";
-        gearBtn.style.zIndex = "1000";
-        gearBtn.style.background = "transparent";
-        gearBtn.style.border = "none";
-        gearBtn.style.fontSize = "24px";
-        gearBtn.style.cursor = "pointer";
-        gearBtn.title = "Settings";
-      
-        // Settings UI content
-        const settingsContent = document.createElement("div");
-        settingsContent.id = "settingsContent";
-        settingsContent.style.display = "flex";
-        settingsContent.style.flexDirection = "column";
-        settingsContent.style.gap = "12px";
-        settingsContent.style.padding = "20px";
-        settingsContent.style.background = "rgba(0,0,0,0.8)";
-        settingsContent.style.borderRadius = "8px";
-      
-        settingsContent.innerHTML = `
-          <label>🎵 Music Volume:
-            <input type="range" id="musicVolume" min="0" max="1" step="0.01" value="${this.musicVolume}">
-          </label>
-          <label>🔊 SFX Volume:
-            <input type="range" id="sfxVolume" min="0" max="1" step="0.01" value="${this.sfxVolume}">
-          </label>
-          <button id="muteBtn">${this.isMuted ? "Unmute" : "Mute"}</button>
-          <button id="pauseBtn">⏸️ Pause</button>
-        `;
-      
-        wrapper.appendChild(settingsContent);
-        document.body.appendChild(wrapper);
-        document.body.appendChild(gearBtn);
-      
-        // Event Listeners
-        document.getElementById("musicVolume").addEventListener("input", (e) => {
-          this.setMusicVolume(parseFloat(e.target.value));
-        });
-      
-        document.getElementById("sfxVolume").addEventListener("input", (e) => {
-          this.setSfxVolume(parseFloat(e.target.value));
-        });
-      
-        document.getElementById("muteBtn").addEventListener("click", () => {
-          this.muteAll(!this.isMuted);
-          console.log("muted")
-          document.getElementById("muteBtn").textContent = this.isMuted ? "Unmute" : "Mute";
-        });
-      
-        document.getElementById("pauseBtn").addEventListener("click", pauseGame);
+      // Create main wrapper
+      const wrapper = document.createElement("div");
+      wrapper.id = "audio-controls";
+      Object.assign(wrapper.style, {
+        position: "fixed",
+        top: "0",
+        left: "0",
+        width: "100vw",
+        height: "100vh",
+        background: "rgba(0,0,0,0.6)",
+        color: "white",
+        fontFamily: "sans-serif",
+        zIndex: "999",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        visibility: "hidden"
+      });
+    
+      // Gear icon toggle button
+      const gearBtn = document.createElement("button");
+      gearBtn.id = "gearBtn";
+      gearBtn.innerHTML = "⚙️";
+      Object.assign(gearBtn.style, {
+        position: "fixed",
+        top: "10px",
+        left: "10px",
+        zIndex: "1000",
+        background: "transparent",
+        border: "none",
+        fontSize: "24px",
+        cursor: "pointer"
+      });
+      gearBtn.title = "Settings";
+    
+      // Settings UI container
+      const settingsContent = document.createElement("div");
+      settingsContent.id = "settingsContent";
+      Object.assign(settingsContent.style, {
+        display: "flex",
+        flexDirection: "column",
+        gap: "12px",
+        padding: "20px",
+        background: "rgba(0,0,0,0.8)",
+        borderRadius: "8px"
+      });
+    
+      // Music volume slider
+      const musicLabel = document.createElement("label");
+      musicLabel.textContent = "🎵 Music Volume: ";
+      const musicSlider = document.createElement("input");
+      musicSlider.type = "range";
+      musicSlider.id = "musicVolume";
+      musicSlider.min = "0";
+      musicSlider.max = "1";
+      musicSlider.step = "0.01";
+      musicSlider.value = this.musicVolume;
+      musicLabel.appendChild(musicSlider);
+    
+      // SFX volume slider
+      const sfxLabel = document.createElement("label");
+      sfxLabel.textContent = "🔊 SFX Volume: ";
+      const sfxSlider = document.createElement("input");
+      sfxSlider.type = "range";
+      sfxSlider.id = "sfxVolume";
+      sfxSlider.min = "0";
+      sfxSlider.max = "1";
+      sfxSlider.step = "0.01";
+      sfxSlider.value = this.sfxVolume;
+      sfxLabel.appendChild(sfxSlider);
+    
+      // Mute button
+      const muteBtn = document.createElement("button");
+      muteBtn.id = "muteBtn";
+      muteBtn.textContent = this.isMuted ? "Unmute" : "Mute";
+    
+      // Pause button
+      const pauseBtn = document.createElement("button");
+      pauseBtn.id = "pauseBtn";
+      pauseBtn.textContent = "⏸️ Pause";
+    
+      // Assemble UI
+      settingsContent.appendChild(musicLabel);
+      settingsContent.appendChild(sfxLabel);
+      settingsContent.appendChild(muteBtn);
+      settingsContent.appendChild(pauseBtn);
+      wrapper.appendChild(settingsContent);
+      document.body.appendChild(wrapper);
+      document.body.appendChild(gearBtn);
+    
+      // Event listeners
+      musicSlider.addEventListener("input", (e) => {
+        this.setMusicVolume(parseFloat(e.target.value));
+      });
+    
+      sfxSlider.addEventListener("input", (e) => {
+        this.setSfxVolume(parseFloat(e.target.value));
+      });
+    
+      muteBtn.addEventListener("click", () => {
+        this.muteAll(!this.isMuted);
+        muteBtn.textContent = this.isMuted ? "Unmute" : "Mute";
+      });
+    
+      pauseBtn.addEventListener("click", pauseGame);
+    
+      let isVisible = false;
 
-      
-        // Toggle visibility
-        let isVisible = false;
-        gearBtn.addEventListener("click", () => {
-          isVisible = !isVisible;
-          wrapper.style.visibility = isVisible ? "visible" : "hidden";
-        });
-      }
-      
-      
+      pauseBtn.addEventListener("click", () => {
+        isVisible = !isVisible;
+        wrapper.style.visibility = isVisible ? "visible" : "hidden";
+        hidePauseMenu();
+      });
+      // Toggle visibility
+      gearBtn.addEventListener("click", () => {
+        isVisible = !isVisible;
+        wrapper.style.visibility = isVisible ? "visible" : "hidden";
+      });
+    }
+       
   }
   

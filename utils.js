@@ -2,8 +2,7 @@ import { GameState } from "./gameStates.js";
 import { Bullet } from "./Bullet.js";
 import { endGame } from "./script.js";
 import { showBloodOverlay } from "./ui.js";
-import { SoundPlayer } from "./SoundPlayer.js";
-const audio = new SoundPlayer();
+import { audio } from "./audio.js";
 // Update HUD
 export function updateSpiderHUD(totalSpiders, killedSpiders) {
   document.getElementById("total-spiders").textContent = totalSpiders;
@@ -125,7 +124,6 @@ export function reload() {
 
   playAnimation("Arms_fullreload");
   audio.play("./sounds/ShotgunReload.wav", 1);
-  audio.fadeOutMusic(3);
 
   setTimeout(() => {
     let bulletsNeeded = GameState.maxMagazineSize - GameState.currentBullets;

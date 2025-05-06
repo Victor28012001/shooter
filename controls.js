@@ -2,10 +2,10 @@ import { GameState } from "./gameStates.js";
 import { animate } from "./script.js";
 import { playAnimation, reload } from "./utils.js";
 import { hidePauseMenu, showPauseMenu } from "./ui.js";
-import { SoundPlayer } from "./SoundPlayer.js";
+import { audio } from "./audio.js";
+
 // import { GameStateManager } from "./GameStateManager.js";
 export var onKeyDown = function (event) {
-  const audio = new SoundPlayer()
   switch (event.keyCode) {
     case 38: // up arrow
     case 87: // W key
@@ -82,12 +82,12 @@ export var pauseGame = function (event) {
   const isButtonClick = event && event.type === "click";
 
   if (isKeyboard || isButtonClick) {
-    console.log("ok");
     GameState.paused = !GameState.paused;
 
     if (GameState.paused) {
       GameState.controls.unlock();
       showPauseMenu();
+      audio.pauseMusic()
     } else {
       GameState.controls.lock();
       animate();

@@ -7,9 +7,9 @@ import {
   updateGunMuzzleFlash,
   createBullet,
 } from "./utils.js";
-import {
-  endGame,
-} from "./script.js";
+import { endGame } from "./script.js";
+import { audio } from "./audio.js";
+
 
 export class Player {
   static gltf = null;
@@ -30,6 +30,20 @@ export class Player {
     GameState.currentAnimation = null;
 
     this.initPhysics();
+    // === Footstep Sound Setup ===
+    this.listener = new THREE.AudioListener();
+    this.camera.add(this.listener);
+
+    this.footstepSound = new THREE.Audio(this.listener);
+    const audioLoader = new THREE.AudioLoader();
+    audioLoader.load("./sounds/Step2.wav", (buffer) => {
+      this.footstepSound.setBuffer(buffer);
+      this.footstepSound.setLoop(false);
+      this.footstepSound.setVolume(0.5);
+    });
+
+    this.lastStepTime = 0;
+    this.stepInterval = 400;
   }
 
   static async loadModel(loader) {
@@ -55,6 +69,7 @@ export class Player {
 
           setTimeout(() => playAnimation("Arms_Draw"), 1500);
           setTimeout(() => playAnimation("Arms_Idle"), 2500);
+          audio.play("./sounds/Breathing.wav", 0.4, true);
 
           Player.addLighting(); // Note: needs to be static if called like this
 
@@ -81,7 +96,6 @@ export class Player {
     GameState.world.addBody(GameState.playerBody);
   }
 
-  
   static addLighting() {
     const light = new THREE.PointLight(0xb69f66, 0.5);
     light.position.set(-0.065, -0.45, 0);
@@ -234,14 +248,9 @@ export class Player {
             }, 1000);
           }
 
-          updateAmmoHUD(
-            GameState.currentBullets,
-            GameState.totalBullets
-          );
+          updateAmmoHUD(GameState.currentBullets, GameState.totalBullets);
         }
       }
-
-      
     }
   }
 
@@ -251,6 +260,7 @@ export class Player {
     const speed = GameState.controls.speed;
     const firing = GameState.isFiring;
     const reloading = GameState.isReloading;
+    const now = performance.now();
 
     let animationToPlay = "Arms_Idle";
 
@@ -260,9 +270,18 @@ export class Player {
       animationToPlay = bullets > 0 ? "Arms_Fire" : "Arms_Inspect";
     } else if (isMoving) {
       animationToPlay = speed >= speedThreshold ? "Arms_Run" : "Arms_Walk";
+
+      if (now - this.lastStepTime > this.stepInterval) {
+        if (this.footstepSound.isPlaying) {
+          this.footstepSound.stop();
+        }
+        this.footstepSound.setPlaybackRate(0.9 + Math.random() * 0.2);
+        this.footstepSound.play();
+        this.lastStepTime = now;
+      }
     }
 
-    const nextAnim = getAnimationState();
+    const nextAnim = getAnimationState(); // or use animationToPlay
     if (GameState.currentAnimation !== nextAnim) {
       playAnimation(nextAnim);
     }

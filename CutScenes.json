@@ -1,0 +1,317 @@
+[
+  {
+    "id": "introCutscene",
+    "dialogue": [
+      {
+        "text": "In a forgotten lab, deep beneath the city...",
+        "portrait": "./assets/images/scientist.png",
+        "voice": "./assets/audio/line1.mp3"
+      },
+      {
+        "text": "Victor was trapped by his own creation.",
+        "portrait": "./assets/images/victor.png",
+        "voice": "./assets/audio/line2.mp3"
+      },
+      {
+        "text": "You are his only hope.",
+        "portrait": null,
+        "voice": "./assets/audio/line3.mp3"
+      }
+    ],
+    "nextScene": "game"
+  },
+  {
+    "id": "cutscene",
+    "dialogue": [
+      {
+        "text": "The experiment was a success...",
+        "portrait": "./assets/images/scientist.png",
+        "voice": "./assets/audio/line1.mp3"
+      },
+      {
+        "text": "But at what cost?",
+        "portrait": "./assets/images/victor.png",
+        "voice": "./assets/audio/line2.mp3"
+      },
+      {
+        "text": "You must escape before it's too late.",
+        "portrait": null,
+        "voice": "./assets/audio/line3.mp3"
+      }
+    ],
+    "nextScene": "game"
+  },
+  {
+    "id": "cutscene2",
+    "dialogue": [
+      {
+        "text": "The lab is collapsing!",
+        "portrait": "./assets/images/scientist.png",
+        "voice": "./assets/audio/line1.mp3"
+      },
+      {
+        "text": "You need to find the exit!",
+        "portrait": "./assets/images/victor.png",
+        "voice": "./assets/audio/line2.mp3"
+      },
+      {
+        "text": "Hurry!",
+        "portrait": null,
+        "voice": "./assets/audio/line3.mp3"
+      }
+    ],
+    "nextScene": "gameOver"
+  },
+  {
+    "id": "cutscene3",
+    "dialogue": [
+      {
+        "text": "You made it!",
+        "portrait": "./assets/images/scientist.png",
+        "voice": "./assets/audio/line1.mp3"
+      },
+      {
+        "text": "But the experiment is still out there.",
+        "portrait": "./assets/images/victor.png",
+        "voice": "./assets/audio/line2.mp3"
+      },
+      {
+        "text": "You must stop it.",
+        "portrait": null,
+        "voice": "./assets/audio/line3.mp3"
+      }
+    ],
+    "nextScene": "gameOver"
+  },
+  {
+    "id": "cutscene4",
+    "dialogue": [
+      {
+        "text": "The city is in danger!",
+        "portrait": "./assets/images/scientist.png",
+        "voice": "./assets/audio/line1.mp3"
+      },
+      {
+        "text": "You must warn the authorities.",
+        "portrait": "./assets/images/victor.png",
+        "voice": "./assets/audio/line2.mp3"
+      },
+      {
+        "text": "Time is running out.",
+        "portrait": null,
+        "voice": "./assets/audio/line3.mp3"
+      }
+    ],
+    "nextScene": "gameOver"
+  },
+  {
+    "id": "cutscene5",
+    "dialogue": [
+      {
+        "text": "The experiment is out of control!",
+        "portrait": "./assets/images/scientist.png",
+        "voice": "./assets/audio/line1.mp3"
+      },
+      {
+        "text": "You must find a way to stop it.",
+        "portrait": "./assets/images/victor.png",
+        "voice": "./assets/audio/line2.mp3"
+      },
+      {
+        "text": "Before it's too late.",
+        "portrait": null,
+        "voice": "./assets/audio/line3.mp3"
+      }
+    ],
+    "nextScene": "gameOver"
+  },
+  {
+    "id": "cutscene6",
+    "dialogue": [
+      {
+        "text": "The experiment is a failure.",
+        "portrait": "./assets/images/scientist.png",
+        "voice": "./assets/audio/line1.mp3"
+      },
+      {
+        "text": "You must escape before it's too late.",
+        "portrait": "./assets/images/victor.png",
+        "voice": "./assets/audio/line2.mp3"
+      },
+      {
+        "text": "Hurry!",
+        "portrait": null,
+        "voice": "./assets/audio/line3.mp3"
+      }
+    ],
+    "nextScene": "gameOver"
+  },
+  {
+    "id": "cutscene7",
+    "dialogue": [
+      {
+        "text": "The lab is collapsing!",
+        "portrait": "./assets/images/scientist.png",
+        "voice": "./assets/audio/line1.mp3"
+      },
+      {
+        "text": "You need to find the exit!",
+        "portrait": "./assets/images/victor.png",
+        "voice": "./assets/audio/line2.mp3"
+      },
+      {
+        "text": "Hurry!",
+        "portrait": null,
+        "voice": "./assets/audio/line3.mp3"
+      }
+    ],
+    "nextScene": "gameOver"
+  },
+  {
+    "id": "cutscene8",
+    "dialogue": [
+      {
+        "text": "You made it!",
+        "portrait": "./assets/images/scientist.png",
+        "voice": "./assets/audio/line1.mp3"
+      },
+      {
+        "text": "But the experiment is still out there.",
+        "portrait": "./assets/images/victor.png",
+        "voice": "./assets/audio/line2.mp3"
+      },
+      {
+        "text": "You must stop it.",
+        "portrait": null,
+        "voice": "./assets/audio/line3.mp3"
+      }
+    ],
+    "nextScene": "gameOver"
+  },
+  {
+    "id": "cutscene9",
+    "dialogue": [
+      {
+        "text": "The city is in danger!",
+        "portrait": "./assets/images/scientist.png",
+        "voice": "./assets/audio/line1.mp3"
+      },
+      {
+        "text": "You must warn the authorities.",
+        "portrait": "./assets/images/victor.png",
+        "voice": "./assets/audio/line2.mp3"
+      },
+      {
+        "text": "Time is running out.",
+        "portrait": null,
+        "voice": "./assets/audio/line3.mp3"
+      }
+    ],
+    "nextScene": "gameOver"
+  },
+  {
+    "id": "cutscene10",
+    "dialogue": [
+      {
+        "text": "The experiment is out of control!",
+        "portrait": "./assets/images/scientist.png",
+        "voice": "./assets/audio/line1.mp3"
+      },
+      {
+        "text": "You must find a way to stop it.",
+        "portrait": "./assets/images/victor.png",
+        "voice": "./assets/audio/line2.mp3"
+      },
+      {
+        "text": "Before it's too late.",
+        "portrait": null,
+        "voice": "./assets/audio/line3.mp3"
+      }
+    ],
+    "nextScene": "gameOver"
+  },
+  {
+    "id": "cutscene11",
+    "dialogue": [
+      {
+        "text": "The experiment is a failure.",
+        "portrait": "./assets/images/scientist.png",
+        "voice": "./assets/audio/line1.mp3"
+      },
+      {
+        "text": "You must escape before it's too late.",
+        "portrait": "./assets/images/victor.png",
+        "voice": "./assets/audio/line2.mp3"
+      },
+      {
+        "text": "Hurry!",
+        "portrait": null,
+        "voice": "./assets/audio/line3.mp3"
+      }
+    ],
+    "nextScene": "gameOver"
+  },
+  {
+    "id": "cutscene12",
+    "dialogue": [
+      {
+        "text": "The lab is collapsing!",
+        "portrait": "./assets/images/scientist.png",
+        "voice": "./assets/audio/line1.mp3"
+      },
+      {
+        "text": "You need to find the exit!",
+        "portrait": "./assets/images/victor.png",
+        "voice": "./assets/audio/line2.mp3"
+      },
+      {
+        "text": "Hurry!",
+        "portrait": null,
+        "voice": "./assets/audio/line3.mp3"
+      }
+    ],
+    "nextScene": "gameOver"
+  },
+  {
+    "id": "cutscene13",
+    "dialogue": [
+      {
+        "text": "You made it!",
+        "portrait": "./assets/images/scientist.png",
+        "voice": "./assets/audio/line1.mp3"
+      },
+      {
+        "text": "But the experiment is still out there.",
+        "portrait": "./assets/images/victor.png",
+        "voice": "./assets/audio/line2.mp3"
+      },
+      {
+        "text": "You must stop it.",
+        "portrait": null,
+        "voice": "./assets/audio/line3.mp3"
+      }
+    ],
+    "nextScene": "gameOver"
+  },
+  {
+    "id": "cutscene14",
+    "dialogue": [
+      {
+        "text": "The city is in danger!",
+        "portrait": "./assets/images/scientist.png",
+        "voice": "./assets/audio/line1.mp3"
+      },
+      {
+        "text": "You must warn the authorities.",
+        "portrait": "./assets/images/victor.png",
+        "voice": "./assets/audio/line2.mp3"
+      },
+      {
+        "text": "Time is running out.",
+        "portrait": null,
+        "voice": "./assets/audio/line3.mp3"
+      }
+    ],
+    "nextScene": "gameOver"
+  }
+]

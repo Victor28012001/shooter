@@ -1,6 +1,6 @@
 import { GameState } from "./gameStates.js";
 import { updateSpiderHUD } from "./utils.js";
-import { SoundPlayer } from "./SoundPlayer.js";
+import { audio } from "./audio.js";
 
 export class Bullet {
   constructor(position, direction) {
@@ -23,7 +23,7 @@ export class Bullet {
     this.mesh.add(light);
 
     GameState.scene.add(this.mesh);
-    this.audio = new SoundPlayer();
+    this.audio = audio;
   }
 
   update() {

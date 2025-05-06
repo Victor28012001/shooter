@@ -1,8 +1,4 @@
-import {
-  showInitialSplash,
-  showSplashScreen,
-  showGameHUD,
-} from "./ui.js";
+import { showInitialSplash, showSplashScreen, showGameHUD } from "./ui.js";
 import { GameState } from "./gameStates.js";
 import {
   faceBulletHolesToCamera,
@@ -19,11 +15,11 @@ import {
 } from "./controls.js";
 import { SpiderManager } from "./Spider.js";
 import { LevelManager } from "./LevelManager.js";
-// import { SoundPlayer } from "./SoundPlayer.js";
 import { Sound3DPlayer } from "./Sound3DPlayer.js";
 
+// export const audio = new SoundPlayer();
+import { audio } from "./audio.js";
 
-// const audio = new SoundPlayer();
 
 // audio.playMusic('./assets/audio/music/creepy_loop.mp3', 0.4); // starts background music
 
@@ -32,14 +28,18 @@ import { Sound3DPlayer } from "./Sound3DPlayer.js";
 // audio.pauseMusic();
 // audio.resumeMusic('./assets/audio/music/creepy_loop.mp3');
 // audio.playVoiceOver('./assets/audio/vo/line1.mp3', 0.8);
-
-
-
+// audio.play("./sounds/Breathing.wav", 0.3, true);
 
 GameState.scene = new THREE.Scene();
 GameState.loadingManager = new THREE.LoadingManager();
-GameState.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+GameState.camera = new THREE.PerspectiveCamera(
+  75,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  1000
+);
 GameState.camera.position.z = 5;
+
 const audio1 = new Sound3DPlayer();
 const spiderManager = new SpiderManager(
   GameState.scene,
@@ -52,11 +52,10 @@ window.addEventListener("load", async () => {
   const levelManager = new LevelManager(spiderManager);
 
   showSplashScreen(async () => {
-    await spiderManager.loadSpiderModel(); 
+    await spiderManager.loadSpiderModel();
     await levelManager.loadAllLevels();
     levelManager.showLevelMenu();
   });
-
 
   // Input listeners
   window.addEventListener("mousedown", onMouseDown);
@@ -77,6 +76,7 @@ export function startGame() {
   GameState.gameStarted = true;
   showGameHUD();
   assignDOMElements();
+  audio.playMusic('./sounds/level ambience/1-01 Encounter.mp3', 0.7);
 
   spiderManager.spawnSpiders();
   animate();
@@ -97,30 +97,26 @@ loader.load(
   }
 );
 
-loader.load(
-  "./assets/models/the_rake.glb",
-  function (gltf) {
-    GameState.theRake = gltf.scene;
-    GameState.theRake.position.set(100, 0.9, 100);
-    GameState.theRake.position.y = 2;
+loader.load("./assets/models/the_rake.glb", function (gltf) {
+  GameState.theRake = gltf.scene;
+  GameState.theRake.position.set(100, 0.9, 100);
+  GameState.theRake.position.y = 2;
 
-    
-    // Setup animation
-    if (gltf.animations && gltf.animations.length > 0) {
-      const mixer = new THREE.AnimationMixer(GameState.theRake);
-      const action = mixer.clipAction(gltf.animations[0]);
-      // console.log(gltf.animations)
-      action.play();
+  // Setup animation
+  if (gltf.animations && gltf.animations.length > 0) {
+    const mixer = new THREE.AnimationMixer(GameState.theRake);
+    const action = mixer.clipAction(gltf.animations[0]);
+    // console.log(gltf.animations)
+    action.play();
 
-      // Store the mixer so you can update it in your animation loop
-      GameState.rakeMixer = mixer;
-    }
+    // Store the mixer so you can update it in your animation loop
+    GameState.rakeMixer = mixer;
   }
-);
+});
 
-function getPlayerBossDist(){
+function getPlayerBossDist() {
   const playerPos = GameState.controls.getObject().position;
-  console.log(playerPos.distanceTo(GameState.theRake.position))
+  console.log(playerPos.distanceTo(GameState.theRake.position));
 }
 
 export function endGame(won) {

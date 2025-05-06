@@ -158,7 +158,6 @@ export function showGameWonPopup(renderer) {
   });
 }
 
-// include other showGameHUD, showGameOverPopup, etc.
 
 export function removeAllUI() {
   const ids = [

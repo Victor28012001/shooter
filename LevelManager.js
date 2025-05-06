@@ -1,5 +1,5 @@
 import { GameState } from "./gameStates.js";
-import { SceneManager } from "./SceneManager.js";
+import { Scene } from "./Scene.js";
 import { PhysicsManager } from "./PhysicsManager.js";
 import { Player } from "./Player.js";
 import { showBlocker, removeUI } from "./ui.js";
@@ -127,7 +127,7 @@ export class LevelManager {
   async loadLevel(index) {
     GameState.currentLevel = index;
 
-    SceneManager.init();
+    Scene.init();
     PhysicsManager.init();
     await this.buildLevel(GameState.levelData[index]);
     removeUI("menu");
