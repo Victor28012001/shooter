@@ -1,6 +1,7 @@
 import { GameState, setState } from "./gameStates.js";
 import { LevelManager } from "./LevelManager.js";
 import { startGame } from "./script.js";
+import { audio } from "./audio.js";
 // import { GameStateManager } from "./GameStateManager.js";
 
 const levelManager = new LevelManager();
@@ -231,6 +232,7 @@ export function showBlocker() {
       }
       // gameStateManager.setState('IN_GAME')
       startGame();
+      audio.play("./sounds/Breathing.wav", 0.7, true);
       removeUI("blocker-wrapper"); // Remove the whole overlay
     });
   } else {

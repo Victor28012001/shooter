@@ -17,18 +17,14 @@ import { SpiderManager } from "./Spider.js";
 import { LevelManager } from "./LevelManager.js";
 import { Sound3DPlayer } from "./Sound3DPlayer.js";
 
-// export const audio = new SoundPlayer();
 import { audio } from "./audio.js";
 
 
-// audio.playMusic('./assets/audio/music/creepy_loop.mp3', 0.4); // starts background music
 
-// audio.play('./assets/audio/sfx/monster_roar.mp3'); // play SFX
 // audio.fadeOutMusic(3); // Fade out over 3 seconds
 // audio.pauseMusic();
 // audio.resumeMusic('./assets/audio/music/creepy_loop.mp3');
 // audio.playVoiceOver('./assets/audio/vo/line1.mp3', 0.8);
-// audio.play("./sounds/Breathing.wav", 0.3, true);
 
 GameState.scene = new THREE.Scene();
 GameState.loadingManager = new THREE.LoadingManager();

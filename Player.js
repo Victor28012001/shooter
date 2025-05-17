@@ -58,7 +58,6 @@ export class Player {
 
           setTimeout(() => playAnimation("Arms_Draw"), 1500);
           setTimeout(() => playAnimation("Arms_Idle"), 2500);
-          audio.play("./sounds/Breathing.wav", 0.4, true);
 
           Player.addLighting(); // Note: needs to be static if called like this
 
@@ -262,7 +261,7 @@ export class Player {
 
       if (now - this.lastStepTime > this.stepInterval) {
         const rate = 0.9 + Math.random() * 0.2;
-        audio.play("./sounds/Step2.wav", 0.5, false, rate);
+        audio.play("./sounds/Step2.wav", 0.7, false, rate);
         this.lastStepTime = now;
       }
       

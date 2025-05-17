@@ -12,7 +12,7 @@ export class SpiderManager {
     this.totalSpiders = 24;
     this.modelReady = GameState.modelReady || false;
     this.lastKnownPlayerPosition = null;
-    this.audioPlayer = new Sound3DPlayer();;
+    this.audioPlayer = new Sound3DPlayer();
     GameState.totalSpiders = this.totalSpiders;
   }
 
@@ -97,17 +97,17 @@ export class SpiderManager {
     this.spiderMeshes.push(model);
     GameState.scene.add(model);
     GameState.mixers.push(model.mixer);
-    
+
     // Play sound when spider is spawned at its position
-    this.playSpiderSound(model, 'idle');
+    this.playSpiderSound(model, "idle");
   }
 
   // Function to play the spider's sound based on state
   playSpiderSound(spider, state) {
     const soundMap = {
-      idle: './sounds/StunSpider.wav',
-      alert: './sounds/Shriek2.wav',
-      attack: './sounds/Shriek2.wav'
+      idle: "./sounds/StunSpider.wav",
+      alert: "./sounds/Shriek2.wav",
+      attack: "./sounds/Shriek2.wav",
     };
 
     const soundFile = soundMap[state];
@@ -116,7 +116,6 @@ export class SpiderManager {
       this.audioPlayer.playPositionalAudio(soundFile, spider.position, 0.5);
     }
   }
-
 
   playAnimation(spider, animationName) {
     if (
@@ -166,14 +165,13 @@ export class SpiderManager {
     spider.currentAnimation = animationName;
 
     // Trigger the appropriate sound based on animation
-    if (animationName.includes('attack')) {
-      this.playSpiderSound(spider, 'attack');
-    } else if (animationName === 'alert') {
-      this.playSpiderSound(spider, 'alert');
+    if (animationName.includes("attack")) {
+      this.playSpiderSound(spider, "attack");
+    } else if (animationName === "alert") {
+      this.playSpiderSound(spider, "alert");
     } else {
-      this.playSpiderSound(spider, 'idle');
+      this.playSpiderSound(spider, "idle");
     }
-
   }
 
   spawnSpiders() {
@@ -228,6 +226,8 @@ export class SpiderManager {
       // 🧠 Apply spacing logic
       this.applySeparationForce(spider);
       this.avoidObstacles(spider);
+      this.pushOutOfRoom(spider);
+
 
       this.updateHealthBar(spider);
       if (spider.mixer) spider.mixer.update(1 / 60);
@@ -315,31 +315,38 @@ export class SpiderManager {
 
   moveInDirection(spider, dir) {
     const speed = 0.05;
-    const newPos = spider.position.clone().add(dir.clone().multiplyScalar(speed));
+    const newPos = spider.position
+      .clone()
+      .add(dir.clone().multiplyScalar(speed));
     newPos.y = 0;
-  
+
     // Cast down from new position to check if inside a room
     const down = new THREE.Vector3(0, -1, 0);
-    const raycaster = new THREE.Raycaster(newPos.clone().add(new THREE.Vector3(0, 1, 0)), down, 0, 2);
-  
+    const raycaster = new THREE.Raycaster(
+      newPos.clone().add(new THREE.Vector3(0, 1, 0)),
+      down,
+      0,
+      2
+    );
+
     const hits = raycaster
       .intersectObjects(this.scene.children, true)
       .filter((obj) => obj.object.name === "room" || obj.object.isRoom);
-  
+
     if (hits.length === 0) {
       spider.position.copy(newPos); // only move if not in a room
     }
-  
+
     spider.position.y = 0; // lock Y
-  
+
     // ✨ Flatten the look target's Y to prevent spider tilting up
     const lookAt = spider.position.clone().add(dir);
     lookAt.y = spider.position.y;
-  
+
     spider.lookAt(lookAt);
     spider.rotateY(Math.PI); // optional if model is backward-facing
   }
-  
+
   getRandomPointNearby(position, radius) {
     const angle = Math.random() * Math.PI * 2;
     const distance = Math.random() * radius;
@@ -426,37 +433,73 @@ export class SpiderManager {
     const rayDistance = 1.2;
     const steerStrength = 0.08;
     const origin = spider.position.clone();
-  
+    // const rooms = GameState.scene.children.filter(
+    //   (child) => child.name === "room"
+    // );
+    // console.log(rooms);
+
     const directions = [
       new THREE.Vector3(0, 0, -1), // center
       new THREE.Vector3(-0.5, 0, -1), // left
       new THREE.Vector3(0.5, 0, -1), // right
     ];
 
-  
     let avoidanceForce = new THREE.Vector3();
-  
+
     directions.forEach((dir) => {
-      const worldDir = dir.clone().applyQuaternion(spider.quaternion).normalize();
+      const worldDir = dir
+        .clone()
+        .applyQuaternion(spider.quaternion)
+        .normalize();
       const raycaster = new THREE.Raycaster(origin, worldDir, 0, rayDistance);
-  
+
       const hits = raycaster
         .intersectObjects(this.scene.children, true)
         .filter((obj) => obj.object.name === "room" || obj.object.isObstacle);
-  
+
       if (hits.length > 0) {
         // Push away from the obstacle
-        const pushAway = worldDir.clone().negate().multiplyScalar(1 / hits[0].distance);
+        const pushAway = worldDir
+          .clone()
+          .negate()
+          .multiplyScalar(1 / hits[0].distance);
         avoidanceForce.add(pushAway);
-        console.log("ok")
+        console.log("ok");
       }
     });
-  
+
     if (avoidanceForce.lengthSq() > 0) {
       avoidanceForce.normalize().multiplyScalar(steerStrength);
       spider.position.add(avoidanceForce);
     }
   }
+
+  isInsideAnyRoom(position) {
+    const rooms = GameState.scene.children.filter(child => child.name === "room");
+    return rooms.some(room => {
+      const box = new THREE.Box3().setFromObject(room);
+      return box.containsPoint(position);
+    });
+  }
+
+  pushOutOfRoom(spider) {
+    if (!this.isInsideAnyRoom(spider.position)) return;
   
+    const directions = [
+      new THREE.Vector3(1, 0, 0),
+      new THREE.Vector3(-1, 0, 0),
+      new THREE.Vector3(0, 0, 1),
+      new THREE.Vector3(0, 0, -1),
+    ];
+  
+    for (let dir of directions) {
+      const testPos = spider.position.clone().add(dir.multiplyScalar(0.5));
+      if (!this.isInsideAnyRoom(testPos)) {
+        spider.position.copy(testPos);
+        break;
+      }
+    }
+  }
+
   
 }

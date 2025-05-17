@@ -12,7 +12,7 @@ export class Scene {
       0.015,
       1000
     );
-    GameState.camera.position.set(12, 1, 12);
+    GameState.camera.position.set(12, 1.5, 12);
 
     GameState.renderer = new THREE.WebGLRenderer();
     GameState.renderer.setPixelRatio(window.devicePixelRatio);
