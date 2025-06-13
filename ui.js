@@ -2,7 +2,7 @@ import { GameState, setState } from "./gameStates.js";
 import { LevelManager } from "./LevelManager.js";
 import { startGame } from "./script.js";
 import { audio } from "./audio.js";
-// import { GameStateManager } from "./GameStateManager.js";
+import { GameStateManager } from "./GameStateManager.js";
 
 const levelManager = new LevelManager();
 export function showSplashScreen(onFinish) {
@@ -60,7 +60,7 @@ export function showGameHUD() {
       <div id="ammoHUD">
         <p><img src="./assets/images/bullet.png" alt="" />Bullets:
           <span id="currentBullets">30</span> /
-          <span id="totalBullets">90</span>
+          <span id="totalBullets">${GameState.totalBullets}</span>
         </p>
         <p id="reloadMessage" style="display: none; color: red">Press R to Reload</p>
       </div>
@@ -106,7 +106,7 @@ export function showBloodOverlay() {
   const overlayElement = createElementFromHTML(
     `<div id="blood-overlay"></div>`
   );
-  overlayElement.style.opacity = "0.65";
+  overlayElement.style.opacity = "0.8";
   document.body.appendChild(overlayElement);
 
   setTimeout(() => {

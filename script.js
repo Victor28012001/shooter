@@ -19,8 +19,6 @@ import { Sound3DPlayer } from "./Sound3DPlayer.js";
 
 import { audio } from "./audio.js";
 
-
-
 // audio.fadeOutMusic(3); // Fade out over 3 seconds
 // audio.pauseMusic();
 // audio.resumeMusic('./assets/audio/music/creepy_loop.mp3');
@@ -35,6 +33,12 @@ GameState.camera = new THREE.PerspectiveCamera(
   1000
 );
 GameState.camera.position.z = 5;
+GameState.renderer = new THREE.WebGLRenderer({ antialias: true });
+GameState.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+GameState.renderer.toneMappingExposure = 1.2; // tweak for brightness
+GameState.renderer.outputEncoding = THREE.sRGBEncoding;
+GameState.renderer.shadowMap.enabled = true;
+GameState.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 const audio1 = new Sound3DPlayer();
 const spiderManager = new SpiderManager(
@@ -72,27 +76,33 @@ export function startGame() {
   GameState.gameStarted = true;
   showGameHUD();
   assignDOMElements();
-  audio.playMusic('./sounds/level ambience/1-01 Encounter.mp3', 0.7);
+  audio.playMusic("./sounds/level ambience/1-01 Encounter.mp3", 0.7);
 
   spiderManager.spawnSpiders();
+
   animate();
 }
 
-loader.load(
-  "./assets/models/low_poly_abandoned_brick_room-opt.glb",
-  function (gltf) {
-    GameState.abandonedBuilding = gltf.scene;
-    GameState.abandonedBuilding.name = "room";
-    GameState.abandonedBuilding.position.y = 0.01;
 
-    // Traverse and update material side for all meshes
-    GameState.abandonedBuilding.traverse((child) => {
-      if (child.isMesh) {
-        child.material.side = THREE.DoubleSide;
-      }
-    });
-  }
-);
+loader.load("./assets/models/low_poly_abandoned_brick_room-opt.glb", (gltf) => {
+  GameState.abandonedBuilding = gltf.scene;
+  GameState.abandonedBuilding.traverse((child) => {
+    if (child.isMesh) {
+      const mat = child.material;
+      child.material = new THREE.MeshStandardMaterial({
+        map: mat.map || null,
+        metalness: 0,
+        roughness: 1,
+        emissive: new THREE.Color(0x000000),
+        envMap: null,
+        side: THREE.DoubleSide,
+      });
+      child.castShadow = false;
+      child.receiveShadow = true;
+    }
+  });
+  GameState.scene.add(GameState.abandonedBuilding);
+});
 
 loader.load("./assets/models/the_rake.glb", function (gltf) {
   GameState.theRake = gltf.scene;
@@ -170,7 +180,7 @@ export function animate() {
   faceBulletHolesToCamera();
 
   // Update cannon debugger (if any)
-  GameState.cannonDebugger.update();
+  // GameState.cannonDebugger.update();
 
   // Render the scene
   GameState.renderer.render(GameState.scene, GameState.camera);

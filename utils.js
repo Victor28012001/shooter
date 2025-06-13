@@ -95,20 +95,19 @@ export function getAnimationState() {
 }
 
 export function checkCollision(position) {
-  var gridSize = 250; // Match GridHelper size
-  var halfGridSize = gridSize / 2;
-  var margin = 0.1;
+  const half = GameState.halfGridSize;
+  const margin = GameState.margin;
 
   if (
-    position.x < -halfGridSize + margin ||
-    position.x > halfGridSize - margin ||
-    position.z < -halfGridSize + margin ||
-    position.z > halfGridSize - margin
+    position.x < -half + margin ||
+    position.x > half - margin ||
+    position.z < -half + margin ||
+    position.z > half - margin
   ) {
-    return true; // Collision detected (player hit boundary)
+    return true;
   }
 
-  return false; // No collision
+  return false;
 }
 
 export function reload() {

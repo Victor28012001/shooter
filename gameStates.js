@@ -38,7 +38,7 @@ export const GameState = {
   bullets: [],
   bulletCount: 0,
   maxMagazineSize: 30,
-  totalBullets: 90,
+  totalBullets: 240, // 8 magazines of 30 bullets each
   currentBullets: 30,
   isFiring: false,
   isReloading: false,
@@ -106,6 +106,11 @@ export const GameState = {
   phongMaterial: new THREE.MeshPhongMaterial(),
   cannonDebugger: null,
   world: new CANNON.World(),
+  gridSize: 250,
+  get halfGridSize() {
+    return this.gridSize / 2;
+  },
+  margin: 0.1,
 
   // DOM Elements (assign these at runtime!)
   dom: {

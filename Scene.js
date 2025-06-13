@@ -12,15 +12,15 @@ export class Scene {
       0.015,
       1000
     );
-    GameState.camera.position.set(12, 1.5, 12);
+    GameState.camera.position.set(28, 1.5, 12);
 
     GameState.renderer = new THREE.WebGLRenderer();
     GameState.renderer.setPixelRatio(window.devicePixelRatio);
     GameState.renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(GameState.renderer.domElement);
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-    GameState.scene.add(ambientLight);
+    // const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    // GameState.scene.add(ambientLight);
 
     GameState.tommyGunLight = new THREE.PointLight(0xb69f66, 100, 100);
     GameState.tommyGunLight.visible = false;

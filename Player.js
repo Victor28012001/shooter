@@ -22,7 +22,7 @@ export class Player {
 
     GameState.playerData.health = 100;
     GameState.currentBullets = 30;
-    GameState.totalBullets = 90;
+    GameState.totalBullets = 240; // 8 magazines of 30 bullets each
     GameState.maxMagazineSize = 30;
     GameState.isReloading = false;
     GameState.isFiring = false;
@@ -30,7 +30,7 @@ export class Player {
 
     this.initPhysics();
     // === Footstep Sound Setup ===
-    
+
     this.lastStepTime = 0;
     this.stepInterval = 400;
   }
@@ -85,10 +85,16 @@ export class Player {
   }
 
   static addLighting() {
-    const light = new THREE.PointLight(0xb69f66, 0.5);
-    light.position.set(-0.065, -0.45, 0);
+    const light1 = new THREE.PointLight(0xb69f66, 0.5);
+    const light = new THREE.PointLight(0xb69f66, 5, 450, 1.5);
+    light.position.set(0.3, -0.2, 2); // move slightly away from the hand
+    light.castShadow = true;
+    light.shadow.bias = -0.001;
+    light.shadow.radius = 2;
+    light1.position.set(-0.065, -0.45, 0);
     if (GameState.tommyGun) {
       GameState.tommyGun.add(light);
+      GameState.tommyGun.add(light1);
     }
   }
 
@@ -264,7 +270,6 @@ export class Player {
         audio.play("./sounds/Step2.wav", 0.7, false, rate);
         this.lastStepTime = now;
       }
-      
     }
 
     const nextAnim = getAnimationState(); // or use animationToPlay

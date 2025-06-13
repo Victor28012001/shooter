@@ -9,7 +9,7 @@ export class SpiderManager {
     this.spiderGLTF = null;
     this.spiderMeshes = GameState.spiderMeshes || [];
     this.spawnedSpiders = 0;
-    this.totalSpiders = 24;
+    this.totalSpiders = 120;
     this.modelReady = GameState.modelReady || false;
     this.lastKnownPlayerPosition = null;
     this.audioPlayer = new Sound3DPlayer();
@@ -58,7 +58,7 @@ export class SpiderManager {
     spider.healthBar.material.map.needsUpdate = true;
   }
 
-  addSpider(posX) {
+  addSpider(posX, posZ) {
     if (!this.spiderGLTF) {
       console.error("Spider model not loaded yet!");
       return;
@@ -87,10 +87,11 @@ export class SpiderManager {
 
     const healthBar = this.createHealthBar();
     model.healthBar = healthBar;
-    model.add(healthBar);
+    // model.add(healthBar);
     healthBar.position.y = 2;
 
-    model.position.set(posX, 0, -30);
+    model.position.set(posX, 0, posZ);
+    // model.position.set(posX, 0, -30);
     model.rotation.y = Math.PI;
     model.rotateY(Math.PI);
 
@@ -174,6 +175,27 @@ export class SpiderManager {
     }
   }
 
+  // spawnSpiders() {
+  //   if (!GameState.modelReady) {
+  //     console.warn("Model not ready yet, delaying spider spawn...");
+  //     return;
+  //   }
+
+  //   this.spawnedSpiders = 0;
+
+  //   const interval = setInterval(() => {
+  //     if (this.spawnedSpiders >= this.totalSpiders) {
+  //       clearInterval(interval);
+  //       return;
+  //     }
+  //     if (GameState.paused) return;
+  //     const randomX = Math.floor(Math.random() * 20) - 10;
+  //     this.addSpider(randomX);
+  //     this.spawnedSpiders++;
+  //     updateSpiderHUD(GameState.totalSpiders, GameState.killedSpiders);
+  //   }, 2000);
+  // }
+
   spawnSpiders() {
     if (!GameState.modelReady) {
       console.warn("Model not ready yet, delaying spider spawn...");
@@ -182,17 +204,38 @@ export class SpiderManager {
 
     this.spawnedSpiders = 0;
 
+    const halfGrid = GameState.halfGridSize;
+    const roomHalfWidth = GameState.roomWidth / 2;
+    const roomHalfDepth = GameState.roomDepth / 2;
+
+    const isOutsideRoom = (x, z) => {
+      return Math.abs(x) > roomHalfWidth || Math.abs(z) > roomHalfDepth;
+    };
+
+    const getRandomPosition = () => {
+      let x, z;
+
+      do {
+        x = Math.random() * (halfGrid * 2) - halfGrid;
+        z = Math.random() * (halfGrid * 2) - halfGrid;
+      } while (!isOutsideRoom(x, z));
+
+      return { x, z };
+    };
+
     const interval = setInterval(() => {
       if (this.spawnedSpiders >= this.totalSpiders) {
         clearInterval(interval);
         return;
       }
+
       if (GameState.paused) return;
-      const randomX = Math.floor(Math.random() * 20) - 10;
-      this.addSpider(randomX);
+
+      const { x, z } = getRandomPosition();
+      this.addSpider(x, z);
       this.spawnedSpiders++;
       updateSpiderHUD(GameState.totalSpiders, GameState.killedSpiders);
-    }, 2000);
+    }, 100);
   }
 
   updateSpiders(player) {
@@ -227,7 +270,6 @@ export class SpiderManager {
       this.applySeparationForce(spider);
       this.avoidObstacles(spider);
       this.pushOutOfRoom(spider);
-
 
       this.updateHealthBar(spider);
       if (spider.mixer) spider.mixer.update(1 / 60);
@@ -475,8 +517,10 @@ export class SpiderManager {
   }
 
   isInsideAnyRoom(position) {
-    const rooms = GameState.scene.children.filter(child => child.name === "room");
-    return rooms.some(room => {
+    const rooms = GameState.scene.children.filter(
+      (child) => child.name === "room"
+    );
+    return rooms.some((room) => {
       const box = new THREE.Box3().setFromObject(room);
       return box.containsPoint(position);
     });
@@ -484,14 +528,14 @@ export class SpiderManager {
 
   pushOutOfRoom(spider) {
     if (!this.isInsideAnyRoom(spider.position)) return;
-  
+
     const directions = [
       new THREE.Vector3(1, 0, 0),
       new THREE.Vector3(-1, 0, 0),
       new THREE.Vector3(0, 0, 1),
       new THREE.Vector3(0, 0, -1),
     ];
-  
+
     for (let dir of directions) {
       const testPos = spider.position.clone().add(dir.multiplyScalar(0.5));
       if (!this.isInsideAnyRoom(testPos)) {
@@ -500,6 +544,4 @@ export class SpiderManager {
       }
     }
   }
-
-  
 }
