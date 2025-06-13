@@ -106,7 +106,7 @@ export function showBloodOverlay() {
   const overlayElement = createElementFromHTML(
     `<div id="blood-overlay"></div>`
   );
-  overlayElement.style.opacity = "1";
+  overlayElement.style.opacity = "0.65";
   document.body.appendChild(overlayElement);
 
   setTimeout(() => {
