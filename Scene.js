@@ -12,7 +12,32 @@ export class Scene {
       0.015,
       1000
     );
-    GameState.camera.position.set(28, 1.5, 12);
+    // GameState.camera.position.set(12, 2.5, 12);
+    const corner = "bottomRight"; // change to "topLeft", etc.
+
+    let x = GameState.halfGridSize;
+    let z = GameState.halfGridSize;
+
+    switch (corner) {
+      case "topLeft":
+        x = -GameState.halfGridSize;
+        z = -GameState.halfGridSize;
+        break;
+      case "topRight":
+        x = GameState.halfGridSize;
+        z = -GameState.halfGridSize;
+        break;
+      case "bottomLeft":
+        x = -GameState.halfGridSize;
+        z = GameState.halfGridSize;
+        break;
+      case "bottomRight":
+        x = GameState.halfGridSize;
+        z = GameState.halfGridSize;
+        break;
+    }
+
+    GameState.camera.position.set(x - 2, 2.5, z - 2);
 
     GameState.renderer = new THREE.WebGLRenderer();
     GameState.renderer.setPixelRatio(window.devicePixelRatio);

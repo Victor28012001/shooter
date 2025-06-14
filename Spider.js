@@ -9,7 +9,8 @@ export class SpiderManager {
     this.spiderGLTF = null;
     this.spiderMeshes = GameState.spiderMeshes || [];
     this.spawnedSpiders = 0;
-    this.totalSpiders = 120;
+    // this.totalSpiders = 60;
+    this.totalSpiders = 0;
     this.modelReady = GameState.modelReady || false;
     this.lastKnownPlayerPosition = null;
     this.audioPlayer = new Sound3DPlayer();
@@ -235,7 +236,7 @@ export class SpiderManager {
       this.addSpider(x, z);
       this.spawnedSpiders++;
       updateSpiderHUD(GameState.totalSpiders, GameState.killedSpiders);
-    }, 100);
+    }, 1200);
   }
 
   updateSpiders(player) {

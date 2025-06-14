@@ -3,7 +3,7 @@ import { Scene } from "./Scene.js";
 import { PhysicsManager } from "./PhysicsManager.js";
 import { Player } from "./Player.js";
 import { showBlocker, removeUI } from "./ui.js";
-// import { GameStateManager } from "./GameStateManager.js";
+import { DoorController } from "./DoorController.js";
 
 export class LevelManager {
   constructor(spiderManager) {
@@ -134,18 +134,85 @@ export class LevelManager {
     showBlocker();
   }
 
+  // async buildLevel(level) {
+  //   GameState.roomBodies = [];
+
+  //   for (const box of level.objects) {
+  //     const clone = GameState.abandonedBuilding.clone();
+  //     clone.position.set(
+  //       box[0] * GameState.gridScale,
+  //       box[1] * GameState.gridScale,
+  //       box[2] * GameState.gridScale
+  //     );
+  //     GameState.scene.add(clone);
+
+  //     const roomBody = new CANNON.Body({ mass: 0 });
+  //     const shape = new CANNON.Box(
+  //       new CANNON.Vec3(
+  //         GameState.roomWidth / 2 + 0.25,
+  //         GameState.wallHeight,
+  //         GameState.roomDepth / 2 + 0.25
+  //       )
+  //     );
+  //     roomBody.addShape(shape);
+  //     roomBody.name = "Room";
+  //     roomBody.position.set(
+  //       box[0] * GameState.gridScale,
+  //       box[1] * GameState.gridScale,
+  //       box[2] * GameState.gridScale - 0.35
+  //     );
+
+  //     // ✅ Recompute the bounding box safely
+  //     roomBody.computeAABB();
+
+  //     GameState.roomBodies.push(roomBody);
+  //     GameState.world.addBody(roomBody);
+  //   }
+
+  //   const [x, y, z] = level.target;
+  //   const goal = new THREE.Mesh(
+  //     new THREE.SphereGeometry(0.5),
+  //     new THREE.MeshBasicMaterial({ color: 0xffff00 })
+  //   );
+  //   goal.position.set(
+  //     x * GameState.gridScale,
+  //     y * GameState.gridScale + 1.6,
+  //     z * GameState.gridScale
+  //   );
+  //   goal.name = "goal";
+  //   GameState.scene.add(goal);
+
+  //   await Player.loadModel(new THREE.GLTFLoader(GameState.loadingManager));
+  //   GameState.player = new Player();
+  // }
+
   async buildLevel(level) {
     GameState.roomBodies = [];
+    const doorControllers = [];
+    var loader = new THREE.GLTFLoader(GameState.loadingManager);
 
     for (const box of level.objects) {
-      const clone = GameState.abandonedBuilding.clone();
-      clone.position.set(
+      const clone = GameState.abandonedBuilding.clone(true);
+      const position = new THREE.Vector3(
         box[0] * GameState.gridScale,
         box[1] * GameState.gridScale,
         box[2] * GameState.gridScale
       );
+      clone.position.copy(position);
       GameState.scene.add(clone);
 
+      // 📌 Add a door to this specific building clone
+      const doorController = new DoorController({
+        targetParent: clone,
+        loader,
+        filePath: "./assets/models/door_wood.glb",
+        offset: new THREE.Vector3(0, 0, 4.47), // adjust relative to clone's structure
+        rotationY: Math.PI,
+        triggerDistance: 2.5,
+      });
+      doorControllers.push(doorController);
+
+      // Physics body
       const roomBody = new CANNON.Body({ mass: 0 });
       const shape = new CANNON.Box(
         new CANNON.Vec3(
@@ -156,19 +223,13 @@ export class LevelManager {
       );
       roomBody.addShape(shape);
       roomBody.name = "Room";
-      roomBody.position.set(
-        box[0] * GameState.gridScale,
-        box[1] * GameState.gridScale,
-        box[2] * GameState.gridScale - 0.35
-      );
-
-      // ✅ Recompute the bounding box safely
+      roomBody.position.set(position.x, position.y, position.z - 0.35);
       roomBody.computeAABB();
-
       GameState.roomBodies.push(roomBody);
       GameState.world.addBody(roomBody);
     }
 
+    // Goal setup (unchanged)
     const [x, y, z] = level.target;
     const goal = new THREE.Mesh(
       new THREE.SphereGeometry(0.5),
