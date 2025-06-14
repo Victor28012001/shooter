@@ -18,9 +18,6 @@ import { LevelManager } from "./LevelManager.js";
 import { Sound3DPlayer } from "./Sound3DPlayer.js";
 
 import { audio } from "./audio.js";
-// import { DoorController } from "./DoorController.js";
-
-const doorControllers = [];
 
 // audio.fadeOutMusic(3); // Fade out over 3 seconds
 // audio.pauseMusic();
@@ -86,37 +83,6 @@ export function startGame() {
   animate();
 }
 
-// loader.load("./assets/models/low_poly_abandoned_brick_room-opt.glb", (gltf) => {
-//   GameState.abandonedBuilding = gltf.scene;
-//   GameState.abandonedBuilding.traverse((child) => {
-//     if (child.isMesh) {
-//       const mat = child.material;
-//       child.material = new THREE.MeshStandardMaterial({
-//         map: mat.map || null,
-//         metalness: 0,
-//         roughness: 1,
-//         emissive: new THREE.Color(0x000000),
-//         envMap: null,
-//         side: THREE.DoubleSide,
-//       });
-//       child.castShadow = false;
-//       child.receiveShadow = true;
-//     }
-//   });
-//   GameState.scene.add(GameState.abandonedBuilding);
-
-//   const doorController = new DoorController({
-//     building: GameState.abandonedBuilding,
-//     loader,
-//     filePath: "./assets/models/door_wood.glb",
-//     offset: new THREE.Vector3(0, 0, 4.47),
-//     rotationY: Math.PI,
-//     triggerDistance: 2.5,
-//   });
-
-//   doorControllers.push(doorController);
-// });
-
 
 loader.load("./assets/models/low_poly_abandoned_brick_room-opt.glb", (gltf) => {
   const building = gltf.scene;
@@ -137,19 +103,7 @@ loader.load("./assets/models/low_poly_abandoned_brick_room-opt.glb", (gltf) => {
       child.receiveShadow = true;
     }
   });
-
-  // GameState.scene.add(building);
-
-  // const doorController = new DoorController({
-  //   targetParent: building,
-  //   loader,
-  //   filePath: "./assets/models/door_wood.glb",
-  //   offset: new THREE.Vector3(0, 0, 4.47),
-  //   rotationY: Math.PI,
-  //   triggerDistance: 2.5,
-  // });
-
-  // doorControllers.push(doorController);
+  
 });
 
 
@@ -195,7 +149,7 @@ export function animate() {
   const delta = GameState.clock.getDelta();
   var speedThreshold = 0.06;
 
-  doorControllers.forEach((controller) => {
+  GameState.doorControllers.forEach((controller) => {
     controller.update(delta);
   });
 

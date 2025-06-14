@@ -111,6 +111,7 @@ export const GameState = {
     return this.gridSize / 2;
   },
   margin: 0.1,
+  doorControllers: [],
 
   // DOM Elements (assign these at runtime!)
   dom: {
