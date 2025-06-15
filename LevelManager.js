@@ -8,15 +8,17 @@ import { DoorController } from "./DoorController.js";
 export class LevelManager {
   constructor(spiderManager) {
     this.spiderManager = spiderManager;
+    
+    this.doorGLB = null;
+    this.loader = new THREE.GLTFLoader(GameState.loadingManager);
   }
 
   async loadAllLevels() {
-    GameState.levelData = [];
+    const promises = [];
     for (let i = 1; i <= GameState.totalLevels; i++) {
-      const res = await fetch(`levels/level${i}.json`);
-      const json = await res.json();
-      GameState.levelData.push(json);
+      promises.push(fetch(`levels/level${i}.json`).then(res => res.json()));
     }
+    GameState.levelData = await Promise.all(promises);
   }
 
   showLevelMenu() {
@@ -134,47 +136,87 @@ export class LevelManager {
     showBlocker();
   }
 
+  
+  async loadDoorModel() {
+    if (!this.doorGLB) {
+      this.doorGLB = await new Promise((resolve, reject) => {
+        this.loader.load(
+          "./assets/models/door_wood.glb",
+          gltf => resolve(gltf),
+          undefined,
+          err => reject(err)
+        );
+      });
+    }
+    return this.doorGLB;
+  }
+
+
   async buildLevel(level) {
     GameState.roomBodies = [];
-    var loader = new THREE.GLTFLoader(GameState.loadingManager);
 
-    for (const box of level.objects) {
-      const clone = GameState.abandonedBuilding.clone(true);
-      const position = new THREE.Vector3(
-        box[0] * GameState.gridScale,
-        box[1] * GameState.gridScale,
-        box[2] * GameState.gridScale
-      );
-      clone.position.copy(position);
-      GameState.scene.add(clone);
+    const doorGLTF = await this.loadDoorModel();
 
-      // 📌 Add a door to this specific building clone
-      const doorController = new DoorController({
-        targetParent: clone,
-        loader,
-        filePath: "./assets/models/door_wood.glb",
-        offset: new THREE.Vector3(0, 0, 4.47), // adjust relative to clone's structure
-        rotationY: Math.PI,
-        triggerDistance: 2.5,
-      });
-      GameState.doorControllers.push(doorController);
+    const idleCallback =
+      window.requestIdleCallback ||
+      function (cb) {
+        return setTimeout(() => cb({ timeRemaining: () => 50 }), 1);
+      };
 
-      // Physics body
-      const roomBody = new CANNON.Body({ mass: 0 });
-      const shape = new CANNON.Box(
-        new CANNON.Vec3(
-          GameState.roomWidth / 2 + 0.25,
-          GameState.wallHeight,
-          GameState.roomDepth / 2 + 0.25
-        )
-      );
-      roomBody.addShape(shape);
-      roomBody.name = "Room";
-      roomBody.position.set(position.x, position.y, position.z - 0.35);
-      roomBody.computeAABB();
-      GameState.roomBodies.push(roomBody);
-      GameState.world.addBody(roomBody);
-    }
+    const objects = level.objects;
+    const batchSize = 5;
+    let i = 0;
+
+    const processBatch = () => {
+      const start = i;
+      const end = Math.min(i + batchSize, objects.length);
+
+      for (; i < end; i++) {
+        const box = objects[i];
+        const clone = GameState.abandonedBuilding.clone(true);
+        const position = new THREE.Vector3(
+          box[0] * GameState.gridScale,
+          box[1] * GameState.gridScale,
+          box[2] * GameState.gridScale
+        );
+        clone.position.copy(position);
+        GameState.scene.add(clone);
+
+        const doorController = new DoorController({
+          targetParent: clone,
+          loader: this.loader,
+          gltf: doorGLTF, // pass cloned door model
+          offset: new THREE.Vector3(0, 0, 4.47),
+          rotationY: Math.PI,
+          triggerDistance: 2.5,
+        });
+        GameState.doorControllers.push(doorController);
+
+        const roomBody = new CANNON.Body({ mass: 0 });
+        const shape = new CANNON.Box(
+          new CANNON.Vec3(
+            GameState.roomWidth / 2 + 0.25,
+            GameState.wallHeight,
+            GameState.roomDepth / 2 + 0.25
+          )
+        );
+        roomBody.addShape(shape);
+        roomBody.name = "Room";
+        roomBody.position.set(position.x, position.y, position.z - 0.35);
+        roomBody.computeAABB();
+        GameState.roomBodies.push(roomBody);
+        GameState.world.addBody(roomBody);
+      }
+
+      if (i < objects.length) {
+        idleCallback(processBatch);
+      }
+    };
+
+    await new Promise((resolve) => {
+      processBatch();
+      resolve();
+    });
 
     // Goal setup (unchanged)
     const [x, y, z] = level.target;
@@ -190,7 +232,7 @@ export class LevelManager {
     goal.name = "goal";
     GameState.scene.add(goal);
 
-    await Player.loadModel(new THREE.GLTFLoader(GameState.loadingManager));
+    await Player.loadModel(this.loader);
     GameState.player = new Player();
   }
 }
