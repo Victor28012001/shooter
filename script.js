@@ -18,11 +18,13 @@ import { LevelManager } from "./LevelManager.js";
 import { Sound3DPlayer } from "./Sound3DPlayer.js";
 
 import { audio } from "./audio.js";
+import { SUBTRACTION, Brush, Evaluator } from 'https://cdn.jsdelivr.net/npm/three-bvh-csg@0.0.17/+esm';
 
 // audio.fadeOutMusic(3); // Fade out over 3 seconds
 // audio.pauseMusic();
 // audio.resumeMusic('./assets/audio/music/creepy_loop.mp3');
 // audio.playVoiceOver('./assets/audio/vo/line1.mp3', 0.8);
+
 
 GameState.scene = new THREE.Scene();
 GameState.loadingManager = new THREE.LoadingManager();
@@ -103,10 +105,94 @@ loader.load("./assets/models/low_poly_abandoned_brick_room-opt.glb", (gltf) => {
       child.receiveShadow = true;
     }
   });
-  
+  cutDoorHole(building);
 });
 
+function cutDoorHole(building) {
+  const doorWidth = 1.2;
+  const doorHeight = 3.0;
+  const doorDepth = 0.5;
 
+  // Compute building bounding box to align door hole
+  const bbox = new THREE.Box3().setFromObject(building);
+  const floorY = bbox.min.y;
+
+  // Create a Brush for the door hole, positioned relative to floorY
+  const doorHoleBrush = new Brush(new THREE.BoxGeometry(doorWidth, doorHeight, doorDepth));
+  doorHoleBrush.position.set(0, floorY + doorHeight / 2, 4.47); // adjust 4.47 as needed
+  doorHoleBrush.updateMatrixWorld();
+
+  const brushes = [];
+
+  building.traverse((child) => {
+    if (child.isMesh) {
+      const brush = new Brush(child.geometry.clone());
+      brush.position.copy(child.position);
+      brush.quaternion.copy(child.quaternion);
+      brush.scale.copy(child.scale);
+      brush.updateMatrixWorld();
+      brushes.push(brush);
+    }
+  });
+
+  if (brushes.length === 0) {
+    console.error("No brushes found in building");
+    return;
+  }
+
+  const buildingBrush = brushes[0];
+  const evaluator = new Evaluator();
+  const resultBrush = evaluator.evaluate(buildingBrush, doorHoleBrush, SUBTRACTION);
+
+  const resultMesh = new THREE.Mesh(resultBrush.geometry, building.children[0].material);
+  resultMesh.castShadow = true;
+  resultMesh.receiveShadow = true;
+
+  building.clear();
+  building.add(resultMesh);
+}
+
+
+
+function ensureNonInterleavedGeometry(geometry) {
+  if (geometry.attributes.position && geometry.attributes.position.isInterleavedBufferAttribute) {
+    const newGeometry = new THREE.BufferGeometry();
+
+    // Copy all attributes to non-interleaved buffers
+    for (const name in geometry.attributes) {
+      const attr = geometry.attributes[name];
+      if (attr.isInterleavedBufferAttribute) {
+        // Create a new BufferAttribute with same data but non-interleaved
+        newGeometry.setAttribute(
+          name,
+          new THREE.BufferAttribute(attr.data.array.slice(), attr.itemSize, attr.normalized)
+        );
+      } else {
+        newGeometry.setAttribute(name, attr.clone());
+      }
+    }
+
+    // Copy index if any
+    if (geometry.index) {
+      newGeometry.setIndex(geometry.index.clone());
+    }
+
+    return newGeometry;
+  }
+  return geometry;
+}
+
+function cleanMorphAttributes(geometry) {
+  if (geometry.morphAttributes) {
+    for (const key in geometry.morphAttributes) {
+      const attrs = geometry.morphAttributes[key];
+      for (let i = 0; i < attrs.length; i++) {
+        attrs[i] = ensureNonInterleavedGeometry(attrs[i]);
+      }
+    }
+  }
+  return geometry;
+}
 
 loader.load("./assets/models/the_rake.glb", function (gltf) {
   GameState.theRake = gltf.scene;
