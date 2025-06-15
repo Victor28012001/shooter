@@ -157,17 +157,79 @@ export class PhysicsManager {
     );
   }
 
+  // static handleCollisions() {
+  //   const stillColliding = new Set();
+
+  //   GameState.world.contacts.forEach(({ bi, bj }) => {
+  //     let other = bi === GameState.playerBody ? bj : bi;
+  //     if (other?.name === "Room") {
+  //       stillColliding.add(other.id);
+
+  //       if (!GameState.currentCollisions.has(other.id)) {
+  //         GameState.currentCollisions.add(other.id);
+  //         GameState.collisionState = true;
+
+  //         if (GameState.moveForward)
+  //           GameState.controls.moveForward(-GameState.controls.speed);
+  //         else if (GameState.moveBackward)
+  //           GameState.controls.moveForward(GameState.controls.speed);
+  //         else if (GameState.moveLeft)
+  //           GameState.controls.moveRight(GameState.controls.speed);
+  //         else if (GameState.moveRight)
+  //           GameState.controls.moveRight(-GameState.controls.speed);
+
+  //         GameState.collisionState = false;
+  //       }
+  //     }
+  //   });
+
+  //   for (const id of GameState.currentCollisions) {
+  //     if (!stillColliding.has(id)) {
+  //       GameState.currentCollisions.delete(id);
+  //       GameState.collisionState = false;
+  //     }
+  //   }
+  // }
+
   static handleCollisions() {
     const stillColliding = new Set();
+    GameState.playerInDoorArea = false;
 
     GameState.world.contacts.forEach(({ bi, bj }) => {
-      let other = bi === GameState.playerBody ? bj : bi;
-      if (other?.name === "Room") {
+      const isPlayerA = bi === GameState.playerBody;
+      const isPlayerB = bj === GameState.playerBody;
+
+      if (!isPlayerA && !isPlayerB) return;
+
+      const other = isPlayerA ? bj : bi;
+      if (!other || !other.name) return;
+
+      // Door collision
+      if (other.name === "DoorArea") {
+        GameState.playerInDoorArea = true;
+        console.log("[COLLISION] Player is in DoorArea");
+        return; // allow passage
+      }
+
+      // Wall collision
+      if (other.name === "Room" || other.name === "RoomWall") {
+        if (GameState.playerInDoorArea) {
+          console.log(
+            `[INFO] Ignoring wall (${other.name}) due to DoorArea overlap`
+          );
+          return; // Allow passage through wall when overlapping door
+        }
+
+        console.log(
+          `[BLOCKED] Colliding with wall: ${other.name} (id: ${other.id})`
+        );
         stillColliding.add(other.id);
 
         if (!GameState.currentCollisions.has(other.id)) {
           GameState.currentCollisions.add(other.id);
           GameState.collisionState = true;
+
+          console.log(`[RESOLVE] Blocking movement, applying correction...`);
 
           if (GameState.moveForward)
             GameState.controls.moveForward(-GameState.controls.speed);
@@ -183,8 +245,10 @@ export class PhysicsManager {
       }
     });
 
+    // Clean up stale wall collisions
     for (const id of GameState.currentCollisions) {
       if (!stillColliding.has(id)) {
+        console.log(`[UNBLOCK] No longer colliding with wall id: ${id}`);
         GameState.currentCollisions.delete(id);
         GameState.collisionState = false;
       }

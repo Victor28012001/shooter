@@ -77,6 +77,7 @@ export const GameState = {
   collisionState: false,
   collidedBody: null,
   currentCollisions: new Set(),
+  playerInDoorArea: false, 
 
   // Audio
   audioContext: null,

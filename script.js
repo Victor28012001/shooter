@@ -18,13 +18,18 @@ import { LevelManager } from "./LevelManager.js";
 import { Sound3DPlayer } from "./Sound3DPlayer.js";
 
 import { audio } from "./audio.js";
-import { SUBTRACTION, Brush, Evaluator } from 'https://cdn.jsdelivr.net/npm/three-bvh-csg@0.0.17/+esm';
+import {
+  SUBTRACTION,
+  Brush,
+  Evaluator,
+} from "https://cdn.jsdelivr.net/npm/three-bvh-csg@0.0.17/+esm";
 
 // audio.fadeOutMusic(3); // Fade out over 3 seconds
 // audio.pauseMusic();
 // audio.resumeMusic('./assets/audio/music/creepy_loop.mp3');
 // audio.playVoiceOver('./assets/audio/vo/line1.mp3', 0.8);
 
+const UNION = 0;
 
 GameState.scene = new THREE.Scene();
 GameState.loadingManager = new THREE.LoadingManager();
@@ -85,7 +90,6 @@ export function startGame() {
   animate();
 }
 
-
 loader.load("./assets/models/low_poly_abandoned_brick_room-opt.glb", (gltf) => {
   const building = gltf.scene;
   GameState.abandonedBuilding = building;
@@ -105,31 +109,76 @@ loader.load("./assets/models/low_poly_abandoned_brick_room-opt.glb", (gltf) => {
       child.receiveShadow = true;
     }
   });
+  
+  // Log all objects in the scene here:
+  GameState.scene.traverse((obj) => {
+    console.log(`Object: ${obj.name} | Type: ${obj.type || obj.constructor.name}`);
+  });
+
   cutDoorHole(building);
 });
 
-function cutDoorHole(building) {
-  const doorWidth = 1.2;
-  const doorHeight = 3.0;
-  const doorDepth = 0.5;
+function createDoorArea(building, doorPos) {
+  const doorWidth = 1.3;
+  const doorHeight = 3.01;
+  const doorDepth = 2.0;
 
-  // Compute building bounding box to align door hole
+  // Debug material — semi-transparent red box
+  const doorMaterial = new THREE.MeshBasicMaterial({
+    color: 0xff0000,
+    opacity: 0.3,
+    transparent: true,
+  });
+
+  console.log("Creating door area at", doorPos);
+
+  const doorGeometry = new THREE.BoxGeometry(doorWidth, doorHeight, doorDepth);
+  const doorAreaMesh = new THREE.Mesh(doorGeometry, doorMaterial);
+  doorAreaMesh.position.copy(doorPos);
+  doorAreaMesh.name = "DoorArea";
+
+  building.add(doorAreaMesh);
+
+  // Cannon.js physics body for door area (no collision response)
+  const doorShape = new CANNON.Box(new CANNON.Vec3(doorWidth / 2, doorHeight / 2, doorDepth / 2));
+  const doorBody = new CANNON.Body({ mass: 0 });
+  doorBody.addShape(doorShape);
+  doorBody.position.set(doorPos.x, doorPos.y, doorPos.z);
+  doorBody.name = "DoorArea";
+  doorBody.collisionResponse = false; // important!
+
+  GameState.world.addBody(doorBody);
+
+  return doorAreaMesh;
+}
+
+
+
+function cutDoorHole(building) {
+  const doorWidth = 1.3; // Slightly bigger
+  const doorHeight = 3.01;
+  const doorDepth = 2.0; // Longer depth to fully cut
+
   const bbox = new THREE.Box3().setFromObject(building);
   const floorY = bbox.min.y;
 
-  // Create a Brush for the door hole, positioned relative to floorY
-  const doorHoleBrush = new Brush(new THREE.BoxGeometry(doorWidth, doorHeight, doorDepth));
-  doorHoleBrush.position.set(0, floorY + doorHeight / 2, 4.47); // adjust 4.47 as needed
+  const doorHoleBrush = new Brush(
+    new THREE.BoxGeometry(doorWidth, doorHeight, doorDepth)
+  );
+  doorHoleBrush.position.set(0, floorY + doorHeight / 2, 4.47);
+  const doorPos = new THREE.Vector3(0, floorY + doorHeight / 2, 4.47);
   doorHoleBrush.updateMatrixWorld();
+  console.log("Door hole brush created at", doorPos);
+
 
   const brushes = [];
 
   building.traverse((child) => {
     if (child.isMesh) {
-      const brush = new Brush(child.geometry.clone());
-      brush.position.copy(child.position);
-      brush.quaternion.copy(child.quaternion);
-      brush.scale.copy(child.scale);
+      let geom = child.geometry.clone();
+      geom = THREE.BufferGeometryUtils.mergeVertices(geom);
+      geom.applyMatrix4(child.matrixWorld); // Apply full transform
+      const brush = new Brush(geom);
       brush.updateMatrixWorld();
       brushes.push(brush);
     }
@@ -140,58 +189,58 @@ function cutDoorHole(building) {
     return;
   }
 
-  const buildingBrush = brushes[0];
+  let buildingBrush = brushes[0];
   const evaluator = new Evaluator();
-  const resultBrush = evaluator.evaluate(buildingBrush, doorHoleBrush, SUBTRACTION);
 
-  const resultMesh = new THREE.Mesh(resultBrush.geometry, building.children[0].material);
+  for (let i = 1; i < brushes.length; i++) {
+    buildingBrush = evaluator.evaluate(buildingBrush, brushes[i], UNION);
+  }
+
+  const resultBrush = evaluator.evaluate(
+    buildingBrush,
+    doorHoleBrush,
+    SUBTRACTION
+  );
+
+  // Optional simplify if your Evaluator supports it
+  if (evaluator.simplify) evaluator.simplify(resultBrush);
+
+  const resultMesh = new THREE.Mesh(
+    resultBrush.geometry,
+    building.children[0].material
+  );
+  resultMesh.geometry = THREE.BufferGeometryUtils.mergeVertices(
+    resultMesh.geometry
+  );
+  resultMesh.geometry.computeVertexNormals();
+
+  resultMesh.material.side = THREE.DoubleSide;
+  resultMesh.material.flatShading = true;
+  resultMesh.material.needsUpdate = true;
+
   resultMesh.castShadow = true;
   resultMesh.receiveShadow = true;
 
   building.clear();
   building.add(resultMesh);
-}
 
 
+  createDoorArea(building, doorPos);
 
-function ensureNonInterleavedGeometry(geometry) {
-  if (geometry.attributes.position && geometry.attributes.position.isInterleavedBufferAttribute) {
-    const newGeometry = new THREE.BufferGeometry();
+  console.log("=== Physics Bodies in World ===");
+  GameState.world.bodies.forEach((body, i) => {
+    console.log(
+      `[${i}] Name: ${body.name || "Unnamed"}, Position: ${body.position.toString()}, Type: ${body.type}, Mass: ${body.mass}`
+    );
 
-    // Copy all attributes to non-interleaved buffers
-    for (const name in geometry.attributes) {
-      const attr = geometry.attributes[name];
-      if (attr.isInterleavedBufferAttribute) {
-        // Create a new BufferAttribute with same data but non-interleaved
-        newGeometry.setAttribute(
-          name,
-          new THREE.BufferAttribute(attr.data.array.slice(), attr.itemSize, attr.normalized)
-        );
-      } else {
-        newGeometry.setAttribute(name, attr.clone());
-      }
-    }
-
-    // Copy index if any
-    if (geometry.index) {
-      newGeometry.setIndex(geometry.index.clone());
-    }
-
-    return newGeometry;
-  }
-  return geometry;
-}
-
-function cleanMorphAttributes(geometry) {
-  if (geometry.morphAttributes) {
-    for (const key in geometry.morphAttributes) {
-      const attrs = geometry.morphAttributes[key];
-      for (let i = 0; i < attrs.length; i++) {
-        attrs[i] = ensureNonInterleavedGeometry(attrs[i]);
-      }
-    }
-  }
-  return geometry;
+    body.shapes.forEach((shape, j) => {
+      console.log(
+        `  Shape[${j}] Type: ${shape.type}, HalfExtents: ${
+          shape.halfExtents ? shape.halfExtents.toString() : "N/A"
+        }`
+      );
+    });
+  });
 }
 
 loader.load("./assets/models/the_rake.glb", function (gltf) {
@@ -230,6 +279,7 @@ export function endGame(won) {
     );
   }
 }
+
 
 export function animate() {
   const delta = GameState.clock.getDelta();

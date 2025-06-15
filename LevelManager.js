@@ -8,7 +8,7 @@ import { DoorController } from "./DoorController.js";
 export class LevelManager {
   constructor(spiderManager) {
     this.spiderManager = spiderManager;
-    
+
     this.doorGLB = null;
     this.loader = new THREE.GLTFLoader(GameState.loadingManager);
   }
@@ -16,7 +16,7 @@ export class LevelManager {
   async loadAllLevels() {
     const promises = [];
     for (let i = 1; i <= GameState.totalLevels; i++) {
-      promises.push(fetch(`levels/level${i}.json`).then(res => res.json()));
+      promises.push(fetch(`levels/level${i}.json`).then((res) => res.json()));
     }
     GameState.levelData = await Promise.all(promises);
   }
@@ -136,21 +136,19 @@ export class LevelManager {
     showBlocker();
   }
 
-  
   async loadDoorModel() {
     if (!this.doorGLB) {
       this.doorGLB = await new Promise((resolve, reject) => {
         this.loader.load(
           "./assets/models/door_wood.glb",
-          gltf => resolve(gltf),
+          (gltf) => resolve(gltf),
           undefined,
-          err => reject(err)
+          (err) => reject(err)
         );
       });
     }
     return this.doorGLB;
   }
-
 
   async buildLevel(level) {
     GameState.roomBodies = [];
@@ -218,19 +216,56 @@ export class LevelManager {
       resolve();
     });
 
-    // Goal setup (unchanged)
+    const loader = new THREE.GLTFLoader(GameState.loadingManager);
+    // const [x, y, z] = [10, 0, 12];
     const [x, y, z] = level.target;
-    const goal = new THREE.Mesh(
-      new THREE.SphereGeometry(0.5),
-      new THREE.MeshBasicMaterial({ color: 0xffff00 })
+
+    loader.load(
+      "./assets/models/trapdoor.glb",
+      (gltf) => {
+        const trapdoor = gltf.scene;
+
+        trapdoor.position.set(
+          x * GameState.gridScale,
+          y * GameState.gridScale,
+          z * GameState.gridScale
+        );
+
+        trapdoor.name = "goal"; // Keep this so your goal-checking logic still works
+
+        trapdoor.scale.set(18, 18, 18);
+        trapdoor.position.y -= 0.6; // Adjust height to match the original sphere goal
+        trapdoor.rotation.set(0, -Math.PI / 2, 0); // Rotate to face the player
+
+        console.log("Trapdoor loaded:", trapdoor);
+        console.log("Trapdoor position:", trapdoor.position);
+        console.log("Trapdoor children:", trapdoor.children);
+
+        // const helper = new THREE.BoxHelper(trapdoor, 0x00ff00);
+        // GameState.scene.add(helper);
+
+        // Optional: Red transparent debug box
+        const trapdoorMaterial = new THREE.MeshBasicMaterial({
+          color: 0xff0000,
+          opacity: 0.3,
+          transparent: true,
+        });
+        const trapdoorGeometry = new THREE.BoxGeometry(1.3, 3.01, 2.0);
+        const trapdoorAreaMesh = new THREE.Mesh(
+          trapdoorGeometry,
+          trapdoorMaterial
+        );
+        trapdoorAreaMesh.position.copy(trapdoor.position);
+        trapdoorAreaMesh.name = "TrapdoorArea";
+
+        GameState.scene.add(trapdoor);
+        GameState.scene.add(trapdoorAreaMesh);
+      },
+      undefined,
+      (error) => {
+        console.error("Error loading model:", error);
+      }
     );
-    goal.position.set(
-      x * GameState.gridScale,
-      y * GameState.gridScale + 1.6,
-      z * GameState.gridScale
-    );
-    goal.name = "goal";
-    GameState.scene.add(goal);
 
     await Player.loadModel(this.loader);
     GameState.player = new Player();
